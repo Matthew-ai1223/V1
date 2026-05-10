@@ -340,6 +340,14 @@ if (window.location.pathname.includes('admin-dashboard')) {
   loadCategories();
   loadSettings();
   populateGlobalLink();
+
+  // Update Live Server Time Display
+  setInterval(() => {
+    const display = document.getElementById('serverTimeDisplay');
+    if (display) {
+        display.innerText = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+    }
+  }, 1000);
 }
 
 window.resetSystemData = async () => {
