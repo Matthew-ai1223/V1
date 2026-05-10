@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/css/style.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
 <body>
@@ -207,6 +209,9 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                         <h2 style="margin: 0;">Real-time Election Results</h2>
                         <div style="display: flex; gap: 10px;">
+                            <button onclick="downloadResultsPDF()" class="btn-small" style="background: #0ea5e9; color: white; display: flex; align-items: center; gap: 5px;">
+                                <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> Download PDF Report
+                            </button>
                             <button onclick="loadStats()" class="btn-small" style="background: var(--primary); display: flex; align-items: center; gap: 5px;">
                                 <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Refresh Results
                             </button>
