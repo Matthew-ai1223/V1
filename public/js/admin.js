@@ -144,8 +144,18 @@ if (window.location.pathname.includes('admin-dashboard')) {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const settings = await res.json();
-        if (settings.startTime) document.getElementById('startTime').value = new Date(settings.startTime).toISOString().slice(0, 16);
-        if (settings.endTime) document.getElementById('endTime').value = new Date(settings.endTime).toISOString().slice(0, 16);
+        
+        if (settings.startTime) {
+            const start = new Date(settings.startTime);
+            // Convert UTC to local format for datetime-local input (YYYY-MM-DDTHH:mm)
+            const localStart = new Date(start.getTime() - (start.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+            document.getElementById('startTime').value = localStart;
+        }
+        if (settings.endTime) {
+            const end = new Date(settings.endTime);
+            const localEnd = new Date(end.getTime() - (end.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+            document.getElementById('endTime').value = localEnd;
+        }
         document.getElementById('votingEnabled').checked = settings.votingEnabled;
         document.getElementById('showResults').checked = settings.showResults;
     } catch (err) { console.error('Settings error:', err); }
@@ -249,19 +259,25 @@ if (window.location.pathname.includes('admin-dashboard')) {
   document.getElementById('settingsForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     ui.showLoading();
+    
+    // Normalize times to UTC before sending to server
+    const startTimeVal = document.getElementById('startTime').value;
+    const endTimeVal = document.getElementById('endTime').value;
+    
     const body = {
-        startTime: document.getElementById('startTime').value,
-        endTime: document.getElementById('endTime').value,
+        startTime: startTimeVal ? new Date(startTimeVal).toISOString() : null,
+        endTime: endTimeVal ? new Date(endTimeVal).toISOString() : null,
         votingEnabled: document.getElementById('votingEnabled').checked,
         showResults: document.getElementById('showResults').checked
     };
+    
     try {
         const res = await fetch(`${API_URL}/admin/settings`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(body)
         });
-        if (res.ok) ui.showToast('Settings saved');
+        if (res.ok) ui.showToast('Settings saved and synchronized with server time');
     } catch (err) { ui.showToast('Error saving settings', 'error'); }
     finally { ui.hideLoading(); }
   });
