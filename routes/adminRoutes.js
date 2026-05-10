@@ -9,7 +9,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const csv = require('csv-parser');
 const multer = require('multer');
-const localUpload = multer({ dest: 'uploads/' });
+const localUpload = multer({ storage: multer.memoryStorage() });
 
 // Get Dashboard Stats
 router.get('/stats', protect, async (req, res) => {
@@ -41,7 +41,10 @@ router.post('/voters/bulk-csv', protect, localUpload.single('csvFile'), async (r
   if (!req.file) return res.status(400).json({ message: 'Please upload a CSV file' });
 
   const results = [];
-  fs.createReadStream(req.file.path)
+  const { Readable } = require('stream');
+  const stream = Readable.from(req.file.buffer.toString());
+
+  stream
     .pipe(csv(['email'])) // Assumes first column is email or header 'email'
     .on('data', (data) => {
       if (data.email && data.email.includes('@')) {
@@ -58,7 +61,6 @@ router.post('/voters/bulk-csv', protect, localUpload.single('csvFile'), async (r
             addedCount++;
           }
         }
-        fs.unlinkSync(req.file.path); // Clean up file
         res.json({ message: `Successfully processed CSV. Added ${addedCount} new voters.` });
       } catch (err) {
         res.status(500).json({ message: 'Error processing voters' });
