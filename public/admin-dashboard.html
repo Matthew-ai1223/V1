@@ -27,7 +27,10 @@
                     <i data-lucide="layers"></i> <span>Election Categories</span>
                 </button>
                 <button class="nav-item" onclick="showTab('candidates', this)">
-                    <i data-lucide="user-plus"></i> <span>Candidates</span>
+                    <i data-lucide="award"></i> <span>Candidate Management</span>
+                </button>
+                <button class="nav-item" onclick="showTab('results-tab', this)">
+                    <i data-lucide="bar-chart-2"></i> <span>Live Monitoring</span>
                 </button>
                 <button class="nav-item" onclick="showTab('settings', this)">
                     <i data-lucide="settings"></i> <span>Election Settings</span>
@@ -192,6 +195,25 @@
                         <h2 style="margin-bottom: 2rem;">Election Candidates</h2>
                         <div id="candidateList"></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Live Monitoring Tab -->
+            <div id="results-tab" class="tab-content">
+                <div class="card" style="background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="margin: 0;">Real-time Election Results</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="loadStats()" class="btn-small" style="background: var(--primary); display: flex; align-items: center; gap: 5px;">
+                                <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Refresh Results
+                            </button>
+                            <a href="/results.html" target="_blank" class="btn-small" style="background: #f1f5f9; color: var(--text-main); display: flex; align-items: center; gap: 5px; text-decoration: none;">
+                                <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Public View
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div id="adminResultsGrid"></div>
                 </div>
             </div>
 

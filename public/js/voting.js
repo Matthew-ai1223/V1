@@ -25,7 +25,7 @@ const init = () => {
 voterAuthForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('authEmail').value;
-    
+
     ui.showLoading();
     try {
         const res = await fetch(`${API_URL}/voter/auth-email`, {
@@ -34,7 +34,7 @@ voterAuthForm.addEventListener('submit', async (e) => {
             body: JSON.stringify({ email })
         });
         const data = await res.json();
-        
+
         if (res.ok) {
             currentToken = data.token;
             voterInfo.innerText = `Voting as: ${data.email}`;
@@ -60,7 +60,7 @@ const renderBallot = () => {
         grid.innerHTML = '<p style="text-align: center; padding: 2rem;">No candidates available for this election.</p>';
         return;
     }
-    
+
     // Group candidates by category
     const grouped = loadedCandidates.reduce((acc, c) => {
         const cat = c.category || 'General';
@@ -80,7 +80,7 @@ const renderBallot = () => {
                     ${allCategories.map(cat => `
                         <div class="checklist-item ${selectedCandidates[cat] ? 'completed' : ''}" 
                              style="display: flex; align-items: center; gap: 10px; font-size: 0.875rem; color: ${selectedCandidates[cat] ? 'var(--text-main)' : 'var(--text-muted)'}; cursor: pointer;"
-                             onclick="document.getElementById('cat-${cat.replace(/\s+/g, '-') }').scrollIntoView({behavior: 'smooth', block: 'center'})">
+                             onclick="document.getElementById('cat-${cat.replace(/\s+/g, '-')}').scrollIntoView({behavior: 'smooth', block: 'center'})">
                             <div class="check-box" style="width: 18px; height: 18px; border-radius: 4px; border: 2px solid ${selectedCandidates[cat] ? 'var(--success)' : 'var(--border)'}; background: ${selectedCandidates[cat] ? 'var(--success)' : 'transparent'}; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
                                 ${selectedCandidates[cat] ? '<span style="color: white; font-size: 10px;">✓</span>' : ''}
                             </div>
@@ -142,14 +142,14 @@ window.selectCandidate = (category, candidateId) => {
 
 window.submitFinalVotes = async () => {
     const unvotedCategories = allCategories.filter(cat => !selectedCandidates[cat]);
-    
+
     if (unvotedCategories.length > 0) {
         ui.showToast(`Please select a candidate for: ${unvotedCategories.join(', ')}`, 'error');
         return;
     }
 
-    if(!confirm('Submit your final selections? This action cannot be undone.')) return;
-    
+    if (!confirm('Submit your final selections? This action cannot be undone.')) return;
+
     ui.showLoading();
     try {
         const candidateIds = Object.values(selectedCandidates);
@@ -188,7 +188,7 @@ const loadBallot = async () => {
         const url = isPreview ? `${API_URL}/voter/results` : `${API_URL}/voter/ballot/${currentToken}`;
         const res = await fetch(url);
         const data = await res.json();
-        
+
         if (!res.ok) {
             document.querySelector('.ballot-container').innerHTML = `<h2>${data.message}</h2>`;
             return;

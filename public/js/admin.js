@@ -60,8 +60,61 @@ if (window.location.pathname.includes('admin-dashboard')) {
             document.getElementById('totalVoters').innerText = data.totalVoters;
             document.getElementById('votedVoters').innerText = data.votedVoters;
             renderCandidates(data.candidates);
+            renderAdminResults(data.candidates);
         }
     } catch (err) { console.error('Stats error:', err); }
+  };
+
+  const renderAdminResults = (candidates) => {
+    const grid = document.getElementById('adminResultsGrid');
+    if (!grid) return;
+
+    const grouped = candidates.reduce((acc, c) => {
+        const cat = c.category || 'General';
+        if (!acc[cat]) acc[cat] = [];
+        acc[cat].push(c);
+        return acc;
+    }, {});
+
+    grid.innerHTML = Object.entries(grouped).map(([category, list]) => {
+        const categoryTotal = list.reduce((sum, c) => sum + (c.votes || 0), 0);
+        const maxVotes = Math.max(...list.map(c => c.votes || 0));
+
+        return `
+            <div style="margin-bottom: 3rem; background: #f8fafc; padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--primary); margin-bottom: 1.5rem; padding-bottom: 0.5rem;">
+                    <h3 style="margin: 0;">${category}</h3>
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Total Votes: ${categoryTotal}</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+                    ${list.sort((a, b) => (b.votes || 0) - (a.votes || 0)).map(c => {
+                        const percentage = categoryTotal === 0 ? 0 : ((c.votes / categoryTotal) * 100).toFixed(1);
+                        const isWinner = c.votes > 0 && c.votes === maxVotes;
+                        return `
+                            <div class="card" style="padding: 1.25rem; border: 2px solid ${isWinner ? 'var(--success)' : 'var(--border)'};">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    ${c.image ? `<img src="${c.image}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">` : ''}
+                                    <div>
+                                        <h4 style="margin: 0;">${c.name}</h4>
+                                        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">${c.party}</p>
+                                    </div>
+                                    ${isWinner ? '<i data-lucide="trophy" style="width: 18px; height: 18px; color: var(--success); margin-left: auto;"></i>' : ''}
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: 700; font-size: 0.8rem;">
+                                    <span>${c.votes || 0} Votes</span>
+                                    <span>${percentage}%</span>
+                                </div>
+                                <div style="background: #e2e8f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: ${percentage}%; background: ${isWinner ? 'var(--success)' : 'var(--primary)'}; height: 100%;"></div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   };
 
   const loadCategories = async () => {

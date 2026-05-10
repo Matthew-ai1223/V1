@@ -66,6 +66,7 @@ const renderResults = (data) => {
             </div>
         `;
     }).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 };
 
 const loadResults = async () => {
@@ -76,11 +77,14 @@ const loadResults = async () => {
         if (!res.ok) {
             document.getElementById('resultsGrid').innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; background: white; border-radius: 24px; box-shadow: var(--shadow);">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">🗳️</div>
+                    <div style="margin-bottom: 1.5rem; color: var(--primary); display: flex; justify-content: center;">
+                        <i data-lucide="archive" style="width: 64px; height: 64px;"></i>
+                    </div>
                     <h2 style="color: var(--text-main); margin-bottom: 1rem;">Results Not Released</h2>
                     <p style="color: var(--text-muted); font-size: 1.1rem;">${data.message || 'The administrator has not yet released the live election results.'}</p>
                 </div>
             `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
             return;
         }
         
