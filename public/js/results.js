@@ -1,9 +1,18 @@
 const API_URL = '/api';
 const socket = typeof io !== 'undefined' ? io() : null;
 
-const renderResults = (candidates) => {
+const renderResults = (data) => {
+    const { candidates, stats } = data;
     const grid = document.getElementById('resultsGrid');
     
+    // Update Global Stats
+    if (stats) {
+        const turnout = stats.totalVoters === 0 ? 0 : ((stats.votedVoters / stats.totalVoters) * 100).toFixed(1);
+        document.getElementById('turnoutPercent').innerText = `${turnout}%`;
+        document.getElementById('votedCount').innerText = stats.votedVoters;
+        document.getElementById('totalCount').innerText = stats.totalVoters;
+    }
+
     // Group candidates by category
     const grouped = candidates.reduce((acc, c) => {
         const cat = c.category || 'General';
@@ -15,27 +24,39 @@ const renderResults = (candidates) => {
     grid.innerHTML = Object.entries(grouped).map(([category, list]) => {
         const categoryTotal = list.reduce((sum, c) => sum + (c.votes || 0), 0);
         
+        // Find the winner(s) in this category
+        const maxVotes = Math.max(...list.map(c => c.votes || 0));
+        
         return `
             <div class="category-result-section" style="grid-column: 1 / -1; margin-top: 3rem; animation: fadeIn 0.5s ease-out;">
                 <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--primary); margin-bottom: 2rem; padding-bottom: 0.5rem;">
-                    <h3 style="margin-bottom: 0; color: var(--text-main);">${category}</h3>
-                    <span style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600;">Total Votes: ${categoryTotal}</span>
+                    <h3 style="margin-bottom: 0; color: var(--text-main); font-size: 1.5rem;">${category}</h3>
+                    <span style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600;">Total Category Votes: ${categoryTotal}</span>
                 </div>
                 <div class="candidate-grid">
-                    ${list.map(c => {
+                    ${list.sort((a, b) => (b.votes || 0) - (a.votes || 0)).map(c => {
                         const percentage = categoryTotal === 0 ? 0 : ((c.votes / categoryTotal) * 100).toFixed(1);
+                        const isWinner = c.votes > 0 && c.votes === maxVotes;
+                        
                         return `
-                            <div class="candidate-card" style="position: relative; overflow: hidden;">
-                                ${c.image ? `<img src="${c.image}" alt="${c.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #f1f5f9; margin-bottom: 1rem;">` : ''}
+                            <div class="candidate-card" style="position: relative; overflow: hidden; border: 2px solid ${isWinner ? 'var(--success)' : 'var(--border)'};">
+                                ${isWinner ? `
+                                    <div style="position: absolute; top: 10px; left: 10px; background: var(--success); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        👑 CURRENT LEADER
+                                    </div>
+                                ` : ''}
+                                
+                                ${c.image ? `<img src="${c.image}" alt="${c.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #f1f5f9; margin-bottom: 1rem; ${isWinner ? 'border-color: var(--success);' : ''}">` : ''}
                                 <h4 style="margin-bottom: 0.25rem;">${c.name}</h4>
                                 <p style="font-size: 0.875rem; margin-bottom: 1.5rem;">${c.party}</p>
+                                
                                 <div class="result-stat">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 700; font-size: 0.9rem;">
                                         <span>${c.votes || 0} Votes</span>
-                                        <span style="color: var(--primary);">${percentage}%</span>
+                                        <span style="color: ${isWinner ? 'var(--success)' : 'var(--primary)'};">${percentage}%</span>
                                     </div>
                                     <div class="progress-bg" style="background: #f1f5f9; height: 10px; border-radius: 5px;">
-                                        <div class="progress-bar" style="width: ${percentage}%; background: linear-gradient(to right, var(--primary), var(--accent)); height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                                        <div class="progress-bar" style="width: ${percentage}%; background: ${isWinner ? 'var(--success)' : 'linear-gradient(to right, var(--primary), var(--accent))'}; height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);"></div>
                                     </div>
                                 </div>
                             </div>

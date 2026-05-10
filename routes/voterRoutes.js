@@ -90,7 +90,9 @@ router.post('/vote/:token', async (req, res) => {
     const io = req.app.get('io');
     if (io) {
       const allCandidates = await Candidate.find();
-      io.emit('voteUpdate', allCandidates);
+      const totalVoters = await Voter.countDocuments();
+      const votedVoters = await Voter.countDocuments({ hasVoted: true });
+      io.emit('voteUpdate', { candidates: allCandidates, stats: { totalVoters, votedVoters } });
     }
 
     res.json({ message: 'Votes submitted successfully' });
@@ -108,7 +110,10 @@ router.get('/results', async (req, res) => {
       return res.status(403).json({ message: 'Results have not been released yet.' });
     }
     const candidates = await Candidate.find();
-    res.json(candidates);
+    const totalVoters = await Voter.countDocuments();
+    const votedVoters = await Voter.countDocuments({ hasVoted: true });
+    
+    res.json({ candidates, stats: { totalVoters, votedVoters } });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

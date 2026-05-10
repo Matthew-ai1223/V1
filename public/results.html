@@ -12,8 +12,21 @@
         <header style="text-align: center; margin-bottom: 3rem;">
             <h2>Live Election Results</h2>
             <p>Real-time analytics and voting statistics.</p>
-        </header>
-        <div id="resultsGrid" class="candidate-grid">
+        <div class="stats-row" style="margin-bottom: 4rem;">
+            <div class="stat-card">
+                <h3>Total Turnout</h3>
+                <p id="turnoutPercent">0%</p>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                    <span id="votedCount">0</span> of <span id="totalCount">0</span> Voters
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Election Status</h3>
+                <p style="font-size: 1.25rem; color: var(--success);" id="electionStatus">LIVE</p>
+            </div>
+        </div>
+
+        <div id="resultsGrid">
             <!-- Results will be loaded here -->
         </div>
         <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid var(--border); padding-top: 1.5rem;">
