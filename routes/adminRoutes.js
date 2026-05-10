@@ -1,0 +1,152 @@
+const express = require('express');
+const router = express.Router();
+const { protect } = require('../middleware/authMiddleware');
+const { upload } = require('../config/cloudinary');
+const Voter = require('../models/Voter');
+const Candidate = require('../models/Candidate');
+const Settings = require('../models/Settings');
+const crypto = require('crypto');
+const fs = require('fs');
+const csv = require('csv-parser');
+const multer = require('multer');
+const localUpload = multer({ dest: 'uploads/' });
+
+// Get Dashboard Stats
+router.get('/stats', protect, async (req, res) => {
+  try {
+    const totalVoters = await Voter.countDocuments();
+    const votedVoters = await Voter.countDocuments({ hasVoted: true });
+    const candidates = await Candidate.find();
+    res.json({ totalVoters, votedVoters, candidates });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Manage Voters
+router.post('/voters', protect, async (req, res) => {
+  try {
+    const { email } = req.body;
+    let voter = await Voter.findOne({ email });
+    if (voter) return res.status(400).json({ message: 'Voter already exists' });
+    voter = await Voter.create({ email });
+    res.json({ message: 'Voter added successfully', voter });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Bulk Upload via CSV
+router.post('/voters/bulk-csv', protect, localUpload.single('csvFile'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ message: 'Please upload a CSV file' });
+
+  const results = [];
+  fs.createReadStream(req.file.path)
+    .pipe(csv(['email'])) // Assumes first column is email or header 'email'
+    .on('data', (data) => {
+      if (data.email && data.email.includes('@')) {
+        results.push(data.email.trim());
+      }
+    })
+    .on('end', async () => {
+      try {
+        let addedCount = 0;
+        for (const email of results) {
+          const exists = await Voter.findOne({ email });
+          if (!exists) {
+            await Voter.create({ email });
+            addedCount++;
+          }
+        }
+        fs.unlinkSync(req.file.path); // Clean up file
+        res.json({ message: `Successfully processed CSV. Added ${addedCount} new voters.` });
+      } catch (err) {
+        res.status(500).json({ message: 'Error processing voters' });
+      }
+    });
+});
+
+router.get('/voters', protect, async (req, res) => {
+  try {
+    const voters = await Voter.find();
+    res.json(voters);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+const { sendVotingLink } = require('../config/email');
+
+router.post('/voters/generate-links', protect, async (req, res) => {
+  try {
+    const voters = await Voter.find();
+    for (let voter of voters) {
+      if (!voter.votingToken) {
+        voter.votingToken = crypto.randomBytes(20).toString('hex');
+        await voter.save();
+      }
+      // Send email if they have a token (either newly generated or existing)
+      const baseUrl = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
+      const link = `${baseUrl}/voting.html?token=${voter.votingToken}`;
+      await sendVotingLink(voter.email, link);
+    }
+    res.json({ message: 'Voting links generated and emailed to all voters' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Manage Candidates
+router.post('/candidates', protect, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 1 }]), async (req, res) => {
+  try {
+    const { name, party, category } = req.body;
+    const image = req.files && req.files['image'] ? req.files['image'][0].path : '';
+    const logo = req.files && req.files['logo'] ? req.files['logo'][0].path : '';
+    
+    const candidate = await Candidate.create({ name, party, category, image, logo });
+    res.json({ message: 'Candidate added successfully', candidate });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.delete('/candidates/:id', protect, async (req, res) => {
+  try {
+    await Candidate.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Candidate deleted' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Manage Settings
+router.get('/settings', protect, async (req, res) => {
+  try {
+    let settings = await Settings.findOne();
+    if (!settings) {
+      settings = await Settings.create({});
+    }
+    res.json(settings);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.post('/settings', protect, async (req, res) => {
+  try {
+    const { startTime, endTime, votingEnabled } = req.body;
+    let settings = await Settings.findOne();
+    if (!settings) {
+      settings = new Settings();
+    }
+    settings.startTime = startTime;
+    settings.endTime = endTime;
+    settings.votingEnabled = votingEnabled;
+    await settings.save();
+    res.json(settings);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+module.exports = router;

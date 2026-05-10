@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Voting Ballot</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="ballot-container">
+        <header style="text-align: center; margin-bottom: 2.5rem;">
+            <h2>Cast Your Vote</h2>
+            <p id="voterInfo" style="font-weight: 500; color: var(--primary);"></p>
+            <p>Your vote is confidential and can only be submitted once.</p>
+        </header>
+        
+        <div id="authSection" class="auth-card" style="display: none; max-width: 400px; margin: 0 auto; text-align: center; animation: fadeIn 0.5s ease-out;">
+            <h3>Verify Eligibility</h3>
+            <p>Enter your registered email address to access your ballot.</p>
+            <form id="voterAuthForm" class="stacked-form">
+                <div class="input-group">
+                    <input type="email" id="authEmail" placeholder="your-email@example.com" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Access Ballot</button>
+            </form>
+        </div>
+
+        <div id="ballotSection" style="display: none;">
+            <div id="ballotCandidates" class="candidate-grid">
+                <!-- Candidates will be loaded here -->
+            </div>
+        </div>
+    </div>
+    <script src="js/utils.js"></script>
+    <script src="js/voting.js"></script>
+</body>
+</html>
