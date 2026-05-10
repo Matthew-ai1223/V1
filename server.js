@@ -13,6 +13,10 @@ const app = express();
 
 // Database Connection Middleware
 const dbMiddleware = async (req, res, next) => {
+  if (!process.env.MONGO_URI) {
+    console.error('MONGO_URI is missing from environment variables');
+    return res.status(500).json({ message: 'Server configuration error: Database URI missing' });
+  }
   try {
     await connectDB();
     next();
