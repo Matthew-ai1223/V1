@@ -18,7 +18,7 @@
                 <i data-lucide="vote" style="width: 32px; height: 32px;"></i>
                 <span>VoteAdmin</span>
             </div>
-            
+
             <nav class="sidebar-nav">
                 <button class="nav-item active" onclick="showTab('voters', this)">
                     <i data-lucide="users"></i> <span>Voters List</span>
@@ -32,7 +32,8 @@
                 <button class="nav-item" onclick="showTab('settings', this)">
                     <i data-lucide="settings"></i> <span>Election Settings</span>
                 </button>
-                <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--border);" class="sidebar-footer">
+                <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--border);"
+                    class="sidebar-footer">
                     <a href="/results.html" target="_blank" class="nav-item">
                         <i data-lucide="bar-chart-3"></i> <span>Live Results</span>
                     </a>
@@ -67,20 +68,28 @@
 
             <!-- Voter Management Tab -->
             <div id="voters" class="tab-content active">
-                <div class="card" style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); box-shadow: var(--shadow);">
-                    <div class="card-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="card"
+                    style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); box-shadow: var(--shadow);">
+                    <div class="card-header-flex"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
                         <h2 style="margin-bottom: 0;">Voter Management</h2>
-                        <div class="share-link-box" style="background: #f8fafc; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+                        <div class="share-link-box"
+                            style="background: #f8fafc; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
                             <span style="font-size: 0.875rem; font-weight: 600;">Shareable Link:</span>
-                            <input type="text" id="globalLink" readonly style="border: none; background: transparent; font-family: monospace; font-size: 0.8rem; width: 250px;" value="">
-                            <button onclick="copyGlobalLink()" class="btn-small" style="background: var(--primary); padding: 4px 12px; display: flex; align-items: center; gap: 4px;">
+                            <input type="text" id="globalLink" readonly
+                                style="border: none; background: transparent; font-family: monospace; font-size: 0.8rem; width: 250px;"
+                                value="">
+                            <button onclick="copyGlobalLink()" class="btn-small"
+                                style="background: var(--primary); padding: 4px 12px; display: flex; align-items: center; gap: 4px;">
                                 <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy
                             </button>
                         </div>
                     </div>
 
-                    <div class="management-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
-                        <div class="voter-form-section" style="padding-right: 2rem; border-right: 1px solid var(--border);">
+                    <div class="management-grid"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+                        <div class="voter-form-section"
+                            style="padding-right: 2rem; border-right: 1px solid var(--border);">
                             <h3>Add Individual Voter</h3>
                             <form id="addVoterForm" class="stacked-form">
                                 <div class="input-group">
@@ -91,33 +100,42 @@
                         </div>
                         <div class="voter-bulk-section">
                             <h3>Bulk Registration</h3>
-                            <p style="font-size: 0.875rem; margin-bottom: 1rem;">Upload a CSV file with an 'email' column.</p>
+                            <p style="font-size: 0.875rem; margin-bottom: 1rem;">Upload a CSV file with an 'email'
+                                column.</p>
                             <form id="bulkVoterForm" style="display: flex; flex-direction: column; gap: 1rem;">
-                                <input type="file" id="csvFile" accept=".csv" required style="padding: 0.5rem; border: 1px dashed var(--border); border-radius: 8px; width: 100%;">
+                                <input type="file" id="csvFile" accept=".csv" required
+                                    style="padding: 0.5rem; border: 1px dashed var(--border); border-radius: 8px; width: 100%;">
                                 <button type="submit" class="btn btn-secondary">Upload Voters CSV</button>
                             </form>
                         </div>
                     </div>
 
                     <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                             <h3>Eligible Voters List</h3>
-                            <button id="generateLinksBtn" class="btn" style="background: var(--success); display: flex; align-items: center; gap: 8px;">
-                                <i data-lucide="send"></i> Generate & Send All Links
+                            <button id="generateLinksBtn" class="btn"
+                                style="background: var(--success); display: flex; align-items: center; gap: 8px;">
+                                <i data-lucide="send"></i> Send All Links
                             </button>
                         </div>
-                        <ul id="voterList" class="list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;"></ul>
+                        <ul id="voterList" class="list"
+                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+                        </ul>
                     </div>
                 </div>
             </div>
 
             <!-- Categories Management Tab -->
             <div id="categories-tab" class="tab-content">
-                <div class="card" style="background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border); max-width: 800px; margin: 0 auto;">
+                <div class="card"
+                    style="background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border); max-width: 800px; margin: 0 auto;">
                     <h2 style="margin-bottom: 2rem;">Election Categories</h2>
-                    <p style="margin-bottom: 2rem; color: var(--text-muted);">Define the positions or groups available for this election (e.g., President, Treasurer, Secretary).</p>
-                    
-                    <form id="addCategoryForm" class="stacked-form" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 3rem;">
+                    <p style="margin-bottom: 2rem; color: var(--text-muted);">Define the positions or groups available
+                        for this election (e.g., President, Treasurer, Secretary).</p>
+
+                    <form id="addCategoryForm" class="stacked-form"
+                        style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 3rem;">
                         <div class="input-group" style="margin-bottom: 0;">
                             <label>Category Name</label>
                             <input type="text" id="catName" placeholder="e.g. President" required>
@@ -131,7 +149,8 @@
 
                     <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
                         <h3>Existing Categories</h3>
-                        <div id="categoryList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                        <div id="categoryList"
+                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
                             <!-- Categories will load here -->
                         </div>
                     </div>
@@ -140,8 +159,10 @@
 
             <!-- Candidate Management Tab -->
             <div id="candidates" class="tab-content">
-                <div class="candidate-management-layout" style="display: grid; grid-template-columns: 350px 1fr; gap: 3rem; align-items: start;">
-                    <div class="card add-candidate-card" style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); position: sticky; top: 2rem;">
+                <div class="candidate-management-layout"
+                    style="display: grid; grid-template-columns: 350px 1fr; gap: 3rem; align-items: start;">
+                    <div class="card add-candidate-card"
+                        style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); position: sticky; top: 2rem;">
                         <h3>Add New Candidate</h3>
                         <form id="addCandidateForm" class="stacked-form">
                             <div class="input-group">
@@ -157,7 +178,8 @@
                                 <select id="candidateCategory" required>
                                     <option value="">Select a category...</option>
                                 </select>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">Manage categories in the "Election Categories" tab.</p>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">Manage
+                                    categories in the "Election Categories" tab.</p>
                             </div>
                             <div class="input-group">
                                 <label>Candidate Photo</label>
@@ -175,7 +197,8 @@
 
             <!-- Settings Tab -->
             <div id="settings" class="tab-content">
-                <div class="card settings-card" style="max-width: 600px; background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border);">
+                <div class="card settings-card"
+                    style="max-width: 600px; background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border);">
                     <h2 style="margin-bottom: 2rem;">Election Lifecycle Settings</h2>
                     <form id="settingsForm" class="stacked-form">
                         <div class="input-group">
@@ -186,7 +209,8 @@
                             <label>Voting End Time</label>
                             <input type="datetime-local" id="endTime">
                         </div>
-                        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; margin: 2rem 0; display: flex; flex-direction: column; gap: 1rem;">
+                        <div
+                            style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; margin: 2rem 0; display: flex; flex-direction: column; gap: 1rem;">
                             <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
                                 <input type="checkbox" id="votingEnabled" style="width: 20px; height: 20px;">
                                 <span style="font-weight: 600;">Enable Public Voting Access</span>
@@ -196,18 +220,23 @@
                                 <span style="font-weight: 600;">Show Live Results to Voters</span>
                             </label>
                         </div>
-                        <button type="submit" class="btn" style="width: 100%; height: 56px;">Update Election Configuration</button>
+                        <button type="submit" class="btn" style="width: 100%; height: 56px;">Update Election
+                            Configuration</button>
                     </form>
 
                     <!-- Danger Zone -->
-                    <div style="margin-top: 3rem; padding: 2rem; border: 2px solid #fee2e2; border-radius: 20px; background: #fffafb;">
-                        <h3 style="color: var(--danger); display: flex; align-items: center; gap: 10px; font-size: 1.1rem; margin-bottom: 1rem;">
+                    <div
+                        style="margin-top: 3rem; padding: 2rem; border: 2px solid #fee2e2; border-radius: 20px; background: #fffafb;">
+                        <h3
+                            style="color: var(--danger); display: flex; align-items: center; gap: 10px; font-size: 1.1rem; margin-bottom: 1rem;">
                             <i data-lucide="alert-triangle"></i> Danger Zone
                         </h3>
                         <p style="font-size: 0.8rem; color: #991b1b; margin-bottom: 1.5rem;">
-                            This action is <strong>irreversible</strong>. It will permanently delete all voters, candidates, and reset all configurations.
+                            This action is <strong>irreversible</strong>. It will permanently delete all voters,
+                            candidates, and reset all configurations.
                         </p>
-                        <button onclick="resetSystemData()" class="btn" style="background: var(--danger); border: none; width: 100%; height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.9rem;">
+                        <button onclick="resetSystemData()" class="btn"
+                            style="background: var(--danger); border: none; width: 100%; height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.9rem;">
                             <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Clear All System Data
                         </button>
                     </div>
@@ -227,7 +256,7 @@
         window.showTab = (tabId, btnEl) => {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if (btnEl) btnEl.classList.add('active');
-            
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
         };

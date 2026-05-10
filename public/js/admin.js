@@ -173,6 +173,28 @@ if (window.location.pathname.includes('admin-dashboard')) {
     finally { ui.hideLoading(); }
   });
 
+  document.getElementById('generateLinksBtn')?.addEventListener('click', async () => {
+    if (!confirm('This will generate unique voting tokens and send email invitations to all registered voters. Continue?')) return;
+    ui.showLoading();
+    try {
+        const res = await fetch(`${API_URL}/admin/voters/generate-links`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok) {
+            ui.showToast('Voting links generated and emails sent successfully');
+            loadVoters();
+        } else {
+            ui.showToast(data.message || 'Failed to generate links', 'error');
+        }
+    } catch (err) {
+        ui.showToast('Server error while generating links', 'error');
+    } finally {
+        ui.hideLoading();
+    }
+  });
+
   document.getElementById('addCategoryForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     ui.showLoading();
