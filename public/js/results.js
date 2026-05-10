@@ -50,8 +50,20 @@ const renderResults = (candidates) => {
 const loadResults = async () => {
     try {
         const res = await fetch(`${API_URL}/voter/results`);
-        const candidates = await res.json();
-        renderResults(candidates);
+        const data = await res.json();
+        
+        if (!res.ok) {
+            document.getElementById('resultsGrid').innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; background: white; border-radius: 24px; box-shadow: var(--shadow);">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">🗳️</div>
+                    <h2 style="color: var(--text-main); margin-bottom: 1rem;">Results Not Released</h2>
+                    <p style="color: var(--text-muted); font-size: 1.1rem;">${data.message || 'The administrator has not yet released the live election results.'}</p>
+                </div>
+            `;
+            return;
+        }
+        
+        renderResults(data);
     } catch (err) {
         console.error('Error loading results:', err);
         if (typeof ui !== 'undefined') ui.showToast('Failed to load live results', 'error');

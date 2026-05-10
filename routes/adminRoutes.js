@@ -136,15 +136,17 @@ router.get('/settings', protect, async (req, res) => {
 
 router.post('/settings', protect, async (req, res) => {
   try {
-    const { startTime, endTime, votingEnabled } = req.body;
+    const { startTime, endTime, votingEnabled, showResults } = req.body;
     let settings = await Settings.findOne();
     if (!settings) {
-      settings = new Settings();
+      settings = await Settings.create({ startTime, endTime, votingEnabled, showResults });
+    } else {
+      settings.startTime = startTime;
+      settings.endTime = endTime;
+      settings.votingEnabled = votingEnabled;
+      settings.showResults = showResults;
+      await settings.save();
     }
-    settings.startTime = startTime;
-    settings.endTime = endTime;
-    settings.votingEnabled = votingEnabled;
-    await settings.save();
     res.json(settings);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });

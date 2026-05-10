@@ -103,6 +103,10 @@ router.post('/vote/:token', async (req, res) => {
 // Public Results
 router.get('/results', async (req, res) => {
   try {
+    const settings = await Settings.findOne();
+    if (!settings || !settings.showResults) {
+      return res.status(403).json({ message: 'Results have not been released yet.' });
+    }
     const candidates = await Candidate.find();
     res.json(candidates);
   } catch (err) {

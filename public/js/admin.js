@@ -92,6 +92,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
     if(settings.startTime) document.getElementById('startTime').value = new Date(settings.startTime).toISOString().slice(0, 16);
     if(settings.endTime) document.getElementById('endTime').value = new Date(settings.endTime).toISOString().slice(0, 16);
     document.getElementById('votingEnabled').checked = settings.votingEnabled;
+    document.getElementById('showResults').checked = settings.showResults;
   };
 
   document.getElementById('addVoterForm').addEventListener('submit', async (e) => {
@@ -209,12 +210,13 @@ if (window.location.pathname.includes('admin-dashboard')) {
     const startTime = document.getElementById('startTime').value;
     const endTime = document.getElementById('endTime').value;
     const votingEnabled = document.getElementById('votingEnabled').checked;
+    const showResults = document.getElementById('showResults').checked;
 
     try {
         const res = await fetch(`${API_URL}/admin/settings`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ startTime, endTime, votingEnabled })
+            body: JSON.stringify({ startTime, endTime, votingEnabled, showResults })
         });
         if (res.ok) {
             ui.showToast('Settings saved successfully');

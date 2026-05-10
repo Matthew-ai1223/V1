@@ -165,8 +165,8 @@ window.submitFinalVotes = async () => {
                 <div style="text-align: center; animation: fadeIn 0.5s ease-out; padding: 3rem;">
                     <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
                     <h2 style="color: var(--success); font-size: 2.5rem; margin-bottom: 1rem;">Thank You!</h2>
-                    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2.5rem;">Your votes for all ${allCategories.length} categories have been securely recorded.</p>
-                    <a href="/results.html" class="btn btn-large" style="padding: 1rem 2.5rem;">View Live Results</a>
+                    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1rem;">Your votes for all ${allCategories.length} categories have been securely recorded.</p>
+                    <p style="color: var(--primary); font-weight: 600;">The election results will be announced by the administrator after the voting period ends.</p>
                 </div>
             `;
         } else {
