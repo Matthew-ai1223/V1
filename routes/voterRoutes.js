@@ -40,8 +40,16 @@ router.get('/ballot/:token', async (req, res) => {
       return res.status(403).json({ message: 'Voting is currently disabled' });
     }
     const now = new Date();
-    if (settings.startTime && now < settings.startTime) return res.status(403).json({ message: 'Voting has not started yet' });
-    if (settings.endTime && now > settings.endTime) return res.status(403).json({ message: 'Voting has ended' });
+    const startTime = settings.startTime ? new Date(settings.startTime) : null;
+    const endTime = settings.endTime ? new Date(settings.endTime) : null;
+
+    console.log(`Time Check - Now: ${now.toISOString()}, Start: ${startTime ? startTime.toISOString() : 'None'}`);
+    
+    // Add 2-minute buffer for clock skew
+    if (startTime && (new Date(now.getTime() + 120000)) < startTime) {
+        return res.status(403).json({ message: 'Voting has not started yet' });
+    }
+    if (endTime && now > endTime) return res.status(403).json({ message: 'Voting has ended' });
 
     const voter = await Voter.findOne({ votingToken: req.params.token });
     if (!voter) return res.status(404).json({ message: 'Invalid voting link' });

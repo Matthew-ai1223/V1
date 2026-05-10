@@ -200,6 +200,15 @@
                 <div class="card settings-card"
                     style="max-width: 600px; background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border);">
                     <h2 style="margin-bottom: 2rem;">Election Lifecycle Settings</h2>
+                    
+                    <div id="serverTimeBox" style="background: #f0f9ff; padding: 1rem; border-radius: 12px; border: 1px solid #bae6fd; margin-bottom: 2rem; display: flex; align-items: center; gap: 12px; color: #0369a1;">
+                        <i data-lucide="clock" style="width: 20px; height: 20px;"></i>
+                        <div>
+                            <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">Current Server Time (UTC)</div>
+                            <div id="serverTimeDisplay" style="font-family: monospace; font-weight: 700;">Loading...</div>
+                        </div>
+                    </div>
+
                     <form id="settingsForm" class="stacked-form">
                         <div class="input-group">
                             <label>Voting Start Time</label>
