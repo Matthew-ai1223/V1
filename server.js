@@ -31,10 +31,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', dbMiddleware);
 
-// Serve frontend static files (Only needed for local development)
-if (process.env.NODE_ENV !== 'production') {
-  app.use(express.static(path.join(__dirname, 'frontend')));
-}
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 // API Routes
 app.get('/api/health', (req, res) => res.json({ status: 'ok', environment: process.env.NODE_ENV }));
@@ -42,12 +40,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/voter', voterRoutes);
 
-// Fallback for frontend (Only needed for local development)
-if (process.env.NODE_ENV !== 'production') {
-  app.use((req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
-  });
-}
+// Fallback for frontend
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ message: 'API route not found' });
+  }
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
 
 const PORT = process.env.PORT || 5000;
 
