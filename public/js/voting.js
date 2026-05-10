@@ -162,13 +162,16 @@ window.submitFinalVotes = async () => {
         if (res.ok) {
             ui.showToast('All votes cast successfully');
             document.querySelector('.ballot-container').innerHTML = `
-                <div style="text-align: center; animation: fadeIn 0.5s ease-out; padding: 3rem;">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                <div style="text-align: center; animation: fadeIn 0.5s ease-out; padding: 3rem; display: flex; flex-direction: column; align-items: center;">
+                    <div style="margin-bottom: 1.5rem; color: var(--success);">
+                        <i data-lucide="check-circle" style="width: 64px; height: 64px;"></i>
+                    </div>
                     <h2 style="color: var(--success); font-size: 2.5rem; margin-bottom: 1rem;">Thank You!</h2>
                     <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1rem;">Your votes for all ${allCategories.length} categories have been securely recorded.</p>
                     <p style="color: var(--primary); font-weight: 600;">The election results will be announced by the administrator after the voting period ends.</p>
                 </div>
             `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         } else {
             ui.showToast(data.message, 'error');
         }
