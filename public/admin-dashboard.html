@@ -23,6 +23,9 @@
                 <button class="nav-item active" onclick="showTab('voters', this)">
                     <i data-lucide="users"></i> <span>Voters List</span>
                 </button>
+                <button class="nav-item" onclick="showTab('categories-tab', this)">
+                    <i data-lucide="layers"></i> <span>Election Categories</span>
+                </button>
                 <button class="nav-item" onclick="showTab('candidates', this)">
                     <i data-lucide="user-plus"></i> <span>Candidates</span>
                 </button>
@@ -108,6 +111,33 @@
                 </div>
             </div>
 
+            <!-- Categories Management Tab -->
+            <div id="categories-tab" class="tab-content">
+                <div class="card" style="background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border); max-width: 800px; margin: 0 auto;">
+                    <h2 style="margin-bottom: 2rem;">Election Categories</h2>
+                    <p style="margin-bottom: 2rem; color: var(--text-muted);">Define the positions or groups available for this election (e.g., President, Treasurer, Secretary).</p>
+                    
+                    <form id="addCategoryForm" class="stacked-form" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 3rem;">
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Category Name</label>
+                            <input type="text" id="catName" placeholder="e.g. President" required>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Description (Optional)</label>
+                            <input type="text" id="catDesc" placeholder="Brief description">
+                        </div>
+                        <button type="submit" class="btn" style="height: 48px;">Add Category</button>
+                    </form>
+
+                    <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
+                        <h3>Existing Categories</h3>
+                        <div id="categoryList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                            <!-- Categories will load here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Candidate Management Tab -->
             <div id="candidates" class="tab-content">
                 <div class="candidate-management-layout" style="display: grid; grid-template-columns: 350px 1fr; gap: 3rem; align-items: start;">
@@ -124,7 +154,10 @@
                             </div>
                             <div class="input-group">
                                 <label>Election Category</label>
-                                <input type="text" id="candidateCategory" placeholder="e.g. President" required>
+                                <select id="candidateCategory" required>
+                                    <option value="">Select a category...</option>
+                                </select>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">Manage categories in the "Election Categories" tab.</p>
                             </div>
                             <div class="input-group">
                                 <label>Candidate Photo</label>

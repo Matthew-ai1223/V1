@@ -5,6 +5,7 @@ const { upload } = require('../config/cloudinary');
 const Voter = require('../models/Voter');
 const Candidate = require('../models/Candidate');
 const Settings = require('../models/Settings');
+const Category = require('../models/Category');
 const crypto = require('crypto');
 const fs = require('fs');
 const csv = require('csv-parser');
@@ -153,10 +154,41 @@ router.post('/settings', protect, async (req, res) => {
   }
 });
 
+// Categories Management
+router.get('/categories', protect, async (req, res) => {
+  try {
+    const categories = await Category.find().sort({ name: 1 });
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.post('/categories', protect, async (req, res) => {
+  try {
+    const { name, description } = req.body;
+    const category = await Category.create({ name, description });
+    res.status(201).json(category);
+  } catch (err) {
+    if (err.code === 11000) return res.status(400).json({ message: 'Category already exists' });
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.delete('/categories/:id', protect, async (req, res) => {
+  try {
+    await Category.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Category removed' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 router.post('/reset', protect, async (req, res) => {
   try {
     await Voter.deleteMany({});
     await Candidate.deleteMany({});
+    await Category.deleteMany({});
     await Settings.findOneAndUpdate({}, { 
       votingEnabled: false, 
       showResults: false,
