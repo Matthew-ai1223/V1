@@ -289,6 +289,11 @@
         </main>
     </div>
 
+    <!-- Mobile Help Button -->
+    <button class="mobile-help-btn" onclick="toggleHelp()" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; background: var(--primary); color: white; border: none; border-radius: 50%; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); z-index: 900; cursor: pointer; align-items: center; justify-content: center;">
+        <i data-lucide="help-circle" style="width: 24px; height: 24px;"></i>
+    </button>
+
     <!-- Help Modal -->
     <div id="helpModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 1000; backdrop-filter: blur(8px); padding: 2rem; overflow-y: auto;">
         <div style="max-width: 700px; margin: 2rem auto; background: white; border-radius: 32px; padding: 3rem; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">

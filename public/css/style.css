@@ -602,3 +602,8 @@ p { color: var(--text-muted); margin-bottom: 1.5rem; }
 .nav-item:hover [data-lucide] {
     transform: scale(1.1);
 }
+@media (max-width: 768px) {
+    .mobile-help-btn {
+        display: flex !important;
+    }
+}
