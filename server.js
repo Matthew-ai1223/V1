@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', dbMiddleware);
 
 // Serve frontend static files
-app.use(express.static(path.join(__dirname, 'frontend')));
+app.use(express.static(path.join(process.cwd(), 'frontend')));
 
 // API Routes
 app.get('/api/health', (req, res) => res.json({ status: 'ok', environment: process.env.NODE_ENV }));
@@ -45,7 +45,7 @@ app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ message: 'API route not found' });
   }
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+  res.sendFile(path.join(process.cwd(), 'frontend', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
