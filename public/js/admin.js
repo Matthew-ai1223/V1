@@ -401,6 +401,62 @@ if (window.location.pathname.includes('admin-dashboard')) {
         display.innerText = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
     }
   }, 1000);
+
+  window.downloadResultsPDF = () => {
+    const element = document.getElementById('adminResultsGrid');
+    if (!element || element.innerHTML === '') {
+        return ui.showToast('No results available to download', 'error');
+    }
+
+    const options = {
+        margin: 0.5,
+        filename: `Election_Results_${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    ui.showLoading();
+    html2pdf().set(options).from(element).save().then(() => {
+        ui.hideLoading();
+        ui.showToast('PDF Report downloaded successfully');
+    }).catch(err => {
+        console.error('PDF error:', err);
+        ui.hideLoading();
+        ui.showToast('Failed to generate PDF', 'error');
+    });
+  };
+
+  window.previewUTC = (inputId, displayId) => {
+    const val = document.getElementById(inputId).value;
+    const display = document.getElementById(displayId);
+    if (val) {
+        const utc = new Date(val).toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+        display.innerText = `Translates to: ${utc}`;
+    } else {
+        display.innerText = '';
+    }
+  };
+
+  window.setStartTimeToNow = () => {
+    const now = new Date();
+    const past = new Date(now.getTime() - (now.getTimezoneOffset() * 60000) - 120000);
+    const localISO = past.toISOString().slice(0, 16);
+    const input = document.getElementById('startTime');
+    if (input) {
+        input.value = localISO;
+        window.previewUTC('startTime', 'startTimeUTC');
+        ui.showToast('Time set to 2 minutes ago (Start Immediately)');
+    }
+  };
+
+  window.toggleHelp = () => {
+    const modal = document.getElementById('helpModal');
+    if (modal) {
+        modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  };
 }
 
 window.resetSystemData = async () => {
