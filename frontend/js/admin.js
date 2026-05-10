@@ -24,7 +24,8 @@ if (loginForm) {
         document.getElementById('errorMsg').innerText = data.message;
       }
     } catch (err) {
-      ui.showToast('Server connection failed', 'error');
+      console.error('Login error:', err);
+      ui.showToast('Server connection failed. Please check your internet and console.', 'error');
     } finally {
       ui.hideLoading();
     }

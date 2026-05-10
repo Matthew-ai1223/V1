@@ -54,6 +54,7 @@ const loadResults = async () => {
         renderResults(candidates);
     } catch (err) {
         console.error('Error loading results:', err);
+        if (typeof ui !== 'undefined') ui.showToast('Failed to load live results', 'error');
     }
 };
 

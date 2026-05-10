@@ -145,7 +145,8 @@ window.submitFinalVotes = async () => {
             ui.showToast(data.message, 'error');
         }
     } catch (err) {
-        ui.showToast('Server error during voting', 'error');
+        console.error('Voting error:', err);
+        ui.showToast('Server connection failed. Check console for details.', 'error');
     } finally {
         ui.hideLoading();
     }
