@@ -240,7 +240,7 @@ h1, h2, h3 { text-align: center; }
   `,
 
   'frontend/js/admin.js': `
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 // Handle Login
 const loginForm = document.getElementById('loginForm');
@@ -303,7 +303,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
     });
     const voters = await res.json();
     const list = document.getElementById('voterList');
-    list.innerHTML = voters.map(v => \`<li>\${v.email} - \${v.hasVoted ? 'Voted' : 'Not Voted'} <br/> \${v.votingToken ? \`Link: http://localhost:5000/voting.html?token=\${v.votingToken}\` : ''}</li>\`).join('');
+    list.innerHTML = voters.map(v => \`<li>\${v.email} - \${v.hasVoted ? 'Voted' : 'Not Voted'} <br/> \${v.votingToken ? \`Link: \${window.location.origin}/voting.html?token=\${v.votingToken}\` : ''}</li>\`).join('');
   };
 
   const loadSettings = async () => {
@@ -393,7 +393,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
   `,
 
   'frontend/js/voting.js': `
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 const urlParams = new URLSearchParams(window.location.search);
 const token = urlParams.get('token');
 
@@ -450,7 +450,7 @@ if (!token) {
   `,
 
   'frontend/js/results.js': `
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 const socket = typeof io !== 'undefined' ? io() : null;
 
 const renderResults = (candidates) => {

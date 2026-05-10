@@ -78,7 +78,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
         ${v.votingToken ? `
           <div style="margin-top: 8px; font-size: 0.875rem;">
             <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; display: block; word-break: break-all;">
-              http://localhost:5000/voting.html?token=${v.votingToken}
+              ${window.location.origin}/voting.html?token=${v.votingToken}
             </code>
           </div>` : ''}
       </li>`).join('');

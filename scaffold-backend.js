@@ -9,7 +9,7 @@ JWT_SECRET=supersecretjwtkey
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
-FRONTEND_URL=http://localhost:5000
+FRONTEND_URL=https://v1-one-henna.vercel.app
   `,
 
   'server.js': `
