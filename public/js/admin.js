@@ -176,19 +176,25 @@ if (window.location.pathname.includes('admin-dashboard')) {
   document.getElementById('addCandidateForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     ui.showLoading();
-    const formData = new FormData();
-    formData.append('name', document.getElementById('candidateName').value);
-    formData.append('party', document.getElementById('candidateParty').value);
-    formData.append('category', document.getElementById('candidateCategory').value);
-    if(document.getElementById('candidateImage').files[0]) formData.append('image', document.getElementById('candidateImage').files[0]);
-    if(document.getElementById('partyLogo').files[0]) formData.append('logo', document.getElementById('partyLogo').files[0]);
-
+    
     try {
+        const formData = new FormData();
+        const nameEl = document.getElementById('candidateName');
+        const partyEl = document.getElementById('candidateParty');
+        const categoryEl = document.getElementById('candidateCategory');
+        const imageEl = document.getElementById('candidateImage');
+
+        if (nameEl) formData.append('name', nameEl.value);
+        if (partyEl) formData.append('party', partyEl.value);
+        if (categoryEl) formData.append('category', categoryEl.value);
+        if (imageEl && imageEl.files[0]) formData.append('image', imageEl.files[0]);
+
         const res = await fetch(`${API_URL}/admin/candidates`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
             body: formData
         });
+        
         if (res.ok) {
             ui.showToast('Candidate added successfully');
             loadStats();
@@ -198,7 +204,8 @@ if (window.location.pathname.includes('admin-dashboard')) {
             ui.showToast(data.message, 'error');
         }
     } catch (err) {
-        ui.showToast('Failed to add candidate', 'error');
+        console.error('Add candidate error:', err);
+        ui.showToast('Failed to add candidate. Check console for details.', 'error');
     } finally {
         ui.hideLoading();
     }
