@@ -153,4 +153,21 @@ router.post('/settings', protect, async (req, res) => {
   }
 });
 
+router.post('/reset', protect, async (req, res) => {
+  try {
+    await Voter.deleteMany({});
+    await Candidate.deleteMany({});
+    await Settings.findOneAndUpdate({}, { 
+      votingEnabled: false, 
+      showResults: false,
+      startTime: null,
+      endTime: null
+    }, { upsert: true });
+    
+    res.json({ message: 'All system data has been cleared successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to reset system data.' });
+  }
+});
+
 module.exports = router;

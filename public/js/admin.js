@@ -298,4 +298,34 @@ if (window.location.pathname.includes('admin-dashboard')) {
   loadVoters();
   loadSettings();
   populateGlobalLink();
-}
+};
+
+window.resetSystemData = async () => {
+    if (!confirm('CRITICAL WARNING: This will permanently delete ALL data (voters, candidates, and results). This action cannot be undone. Are you absolutely sure?')) return;
+    
+    const confirmText = prompt('To confirm deletion, please type "DELETE" in the box below:');
+    if (confirmText !== 'DELETE') {
+        ui.showToast('Reset cancelled: Confirmation text did not match.', 'error');
+        return;
+    }
+
+    const token = localStorage.getItem('adminToken');
+    ui.showLoading();
+    try {
+        const res = await fetch(`${API_URL}/admin/reset`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok) {
+            ui.showToast('System has been fully reset successfully');
+            setTimeout(() => window.location.reload(), 1500);
+        } else {
+            ui.showToast(data.message, 'error');
+        }
+    } catch (err) {
+        ui.showToast('Reset failed. Check server connection.', 'error');
+    } finally {
+        ui.hideLoading();
+    }
+};
