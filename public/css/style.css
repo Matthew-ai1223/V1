@@ -53,7 +53,7 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.dashboard-container { max-width: 1100px; }
+.dashboard-container, .ballot-container { max-width: 1100px; }
 
 h1, h2, h3 {
     font-weight: 700;
@@ -322,17 +322,78 @@ p { color: var(--text-muted); margin-bottom: 1.5rem; }
 .candidate-card p { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
 
 /* Responsive Adjustments */
-@media (max-width: 640px) {
+@media (max-width: 900px) {
+    .ballot-layout {
+        grid-template-columns: 1fr !important; /* Stack sidebar on top for tablets/mobile */
+        gap: 1.5rem !important;
+    }
+    
+    .ballot-sidebar {
+        position: relative !important;
+        top: 0 !important;
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        padding: 1rem !important;
+        white-space: nowrap !important;
+    }
+
+    .progress-checklist {
+        flex-direction: row !important;
+        gap: 1rem !important;
+    }
+
+    .checklist-item {
+        padding: 0.5rem 1rem !important;
+        background: #f1f5f9 !important;
+        border-radius: 12px !important;
+        flex-shrink: 0 !important;
+    }
+}
+
+@media (max-width: 768px) {
     .landing-container, .form-container, .dashboard-container, .ballot-container, .results-container {
         margin: 1rem;
         padding: 1.5rem;
+        border-radius: 16px;
     }
     
-    h1 { font-size: 1.75rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+
+    .tabs { flex-direction: column; gap: 0.5rem; }
+    .inline-form { flex-direction: column; gap: 1rem; }
     
-    .tabs { flex-direction: column; }
+    .candidate-grid {
+        grid-template-columns: 1fr; /* Single column on mobile for clarity */
+        gap: 1rem;
+    }
     
-    .inline-form { flex-direction: column; }
+    .candidate-card {
+        padding: 1rem;
+    }
+
+    .candidate-card img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .stat-card p {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .landing-container, .form-container, .dashboard-container, .ballot-container, .results-container {
+        padding: 1rem;
+    }
+
+    h1 { font-size: 1.5rem; }
+    
+    .btn {
+        width: 100%;
+        padding: 0.875rem;
+    }
 }
 
 /* Results Progress Bar (concept) */
