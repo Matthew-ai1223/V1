@@ -176,4 +176,4 @@ const loadBallot = async () => {
     }
 };
 
-init();
+document.addEventListener('DOMContentLoaded', init);

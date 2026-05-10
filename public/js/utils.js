@@ -24,14 +24,24 @@ const ui = {
 };
 
 // Inject UI elements into every page
-document.addEventListener('DOMContentLoaded', () => {
+const injectUI = () => {
+    if (document.getElementById('loading-overlay')) return;
+    
     const overlay = document.createElement('div');
     overlay.id = 'loading-overlay';
     overlay.className = 'loading-overlay';
+    overlay.style.display = 'none'; // Ensure hidden by default
     overlay.innerHTML = '<div class="spinner"></div>';
     document.body.appendChild(overlay);
 
     const toastContainer = document.createElement('div');
     toastContainer.id = 'toast-container';
     document.body.appendChild(toastContainer);
-});
+};
+
+// Run injection if body exists, otherwise wait
+if (document.body) {
+    injectUI();
+} else {
+    document.addEventListener('DOMContentLoaded', injectUI);
+}

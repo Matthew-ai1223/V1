@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const files = {
-  'frontend/index.html': `
+  'public/index.html': `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +21,7 @@ const files = {
 </html>
   `,
 
-  'frontend/admin-login.html': `
+  'public/admin-login.html': `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,7 +50,7 @@ const files = {
 </html>
   `,
 
-  'frontend/admin-dashboard.html': `
+  'public/admin-dashboard.html': `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,7 +120,7 @@ const files = {
 </html>
   `,
 
-  'frontend/voting.html': `
+  'public/voting.html': `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,7 +139,7 @@ const files = {
 </html>
   `,
 
-  'frontend/results.html': `
+  'public/results.html': `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,7 +158,7 @@ const files = {
 </html>
   `,
 
-  'frontend/css/style.css': `
+  'public/css/style.css': `
 :root {
   --primary-color: #4CAF50;
   --secondary-color: #2196F3;
@@ -239,7 +239,7 @@ h1, h2, h3 { text-align: center; }
 .candidate-card img { max-width: 100%; height: 100px; object-fit: contain; margin-bottom: 10px; }
   `,
 
-  'frontend/js/admin.js': `
+  'public/js/admin.js': `
 const API_URL = '/api';
 
 // Handle Login
@@ -392,7 +392,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
 }
   `,
 
-  'frontend/js/voting.js': `
+  'public/js/voting.js': `
 const API_URL = '/api';
 const urlParams = new URLSearchParams(window.location.search);
 const token = urlParams.get('token');
@@ -449,7 +449,7 @@ if (!token) {
 }
   `,
 
-  'frontend/js/results.js': `
+  'public/js/results.js': `
 const API_URL = '/api';
 const socket = typeof io !== 'undefined' ? io() : null;
 
