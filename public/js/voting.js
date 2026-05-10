@@ -54,6 +54,49 @@ let selectedCandidates = {}; // { category: candidateId }
 let allCategories = [];
 let loadedCandidates = []; // Global store for candidates
 
+// ── Skeleton for ballot section ───────────────────────────────────────────
+
+const showBallotSkeleton = () => {
+    const grid = document.getElementById('ballotCandidates');
+    if (!grid) return;
+    ballotSection.style.display = 'block';
+    grid.innerHTML = `
+        <div class="ballot-layout" style="display:grid;grid-template-columns:240px 1fr;gap:2rem;">
+            <!-- Progress sidebar skeleton -->
+            <aside style="background:white;padding:1.5rem;border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--border);">
+                <div class="skeleton skeleton-title" style="width:80%;margin-bottom:1.5rem;"></div>
+                ${Array(3).fill(`
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
+                        <div class="skeleton" style="width:18px;height:18px;border-radius:4px;flex-shrink:0;"></div>
+                        <div class="skeleton skeleton-text" style="flex:1;height:0.875rem;"></div>
+                    </div>
+                `).join('')}
+            </aside>
+
+            <!-- Main ballot skeleton -->
+            <div>
+                ${Array(2).fill(`
+                    <div style="margin-bottom:3rem;background:rgba(255,255,255,0.5);padding:1.5rem;border-radius:20px;border:1px solid var(--border);">
+                        <div class="skeleton skeleton-title" style="width:40%;margin-bottom:1.5rem;"></div>
+                        <div class="candidate-grid">
+                            ${Array(3).fill(`
+                                <div class="skeleton-card" style="background:white;padding:1.5rem;border-radius:20px;border:2px solid var(--border);text-align:center;">
+                                    <div class="skeleton" style="width:100px;height:100px;border-radius:50%;margin:0 auto 1rem;"></div>
+                                    <div class="skeleton skeleton-title" style="width:65%;margin:0 auto 8px;"></div>
+                                    <div class="skeleton skeleton-text" style="width:45%;height:0.75rem;margin:0 auto 1.5rem;"></div>
+                                    <div class="skeleton skeleton-button" style="width:80%;height:36px;margin:0 auto;border-radius:8px;"></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+};
+
+// ── Render real ballot ────────────────────────────────────────────────────
+
 const renderBallot = () => {
     const grid = document.getElementById('ballotCandidates');
     if (!loadedCandidates || loadedCandidates.length === 0) {
@@ -183,17 +226,22 @@ window.submitFinalVotes = async () => {
     }
 };
 
-// Update loadBallot to populate loadedCandidates
+// ── Load ballot with skeleton ─────────────────────────────────────────────
+
 const loadBallot = async () => {
-    ballotSection.style.display = 'none';
-    ui.showLoading();
+    showBallotSkeleton(); // Show skeleton immediately
     try {
         const url = isPreview ? `${API_URL}/voter/results` : `${API_URL}/voter/ballot/${currentToken}`;
         const res = await fetch(url);
         const data = await res.json();
 
         if (!res.ok) {
-            document.querySelector('.ballot-container').innerHTML = `<h2>${data.message}</h2>`;
+            ballotSection.style.display = 'block';
+            document.getElementById('ballotCandidates').innerHTML = `
+                <div style="text-align:center;padding:3rem;background:white;border-radius:24px;box-shadow:var(--shadow);">
+                    <h2 style="color:var(--danger);margin-bottom:1rem;">Access Denied</h2>
+                    <p>${data.message}</p>
+                </div>`;
             return;
         }
 
@@ -202,8 +250,6 @@ const loadBallot = async () => {
         ballotSection.style.display = 'block';
     } catch (err) {
         ui.showToast('Server error', 'error');
-    } finally {
-        ui.hideLoading();
     }
 };
 

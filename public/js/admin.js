@@ -50,7 +50,85 @@ if (window.location.pathname.includes('admin-dashboard')) {
     if (btnEl) btnEl.classList.add('active');
   };
 
+  // ── Skeleton helpers ──────────────────────────────────────────────────
+
+  const showStatSkeletons = () => {
+    ['totalVoters', 'votedVoters'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<span class="skeleton skeleton-text" style="width:50px;height:1.5rem;display:inline-block;border-radius:4px;"></span>';
+    });
+  };
+
+  const showVoterListSkeleton = () => {
+    const list = document.getElementById('voterList');
+    if (!list) return;
+    list.innerHTML = Array(5).fill(`
+      <li style="background:#f8fafc;padding:1rem;border-radius:12px;border:1px solid var(--border);list-style:none;">
+        <div class="skeleton skeleton-text" style="width:65%;margin-bottom:10px;"></div>
+        <div class="skeleton skeleton-text" style="width:40%;height:0.75rem;"></div>
+      </li>
+    `).join('');
+  };
+
+  const showCategoryListSkeleton = () => {
+    const list = document.getElementById('categoryList');
+    if (!list) return;
+    list.innerHTML = Array(4).fill(`
+      <div class="skeleton-card" style="background:white;padding:1.5rem;border-radius:16px;border:1px solid var(--border);">
+        <div class="skeleton skeleton-title" style="width:70%;margin-bottom:10px;"></div>
+        <div class="skeleton skeleton-text" style="width:50%;height:0.75rem;"></div>
+      </div>
+    `).join('');
+  };
+
+  const showCandidateListSkeleton = () => {
+    const grid = document.getElementById('candidateList');
+    if (!grid) return;
+    grid.innerHTML = `
+      <div style="margin-bottom:3rem;">
+        <div class="skeleton skeleton-title" style="width:30%;margin-bottom:1.5rem;"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.5rem;">
+          ${Array(3).fill(`
+            <div class="skeleton-card" style="background:white;padding:1.5rem;border-radius:20px;border:1px solid var(--border);text-align:center;">
+              <div class="skeleton skeleton-avatar" style="width:80px;height:80px;margin:0 auto 1rem;"></div>
+              <div class="skeleton skeleton-title" style="width:60%;margin:0 auto 8px;"></div>
+              <div class="skeleton skeleton-text" style="width:45%;margin:0 auto 1rem;height:0.75rem;"></div>
+              <div class="skeleton skeleton-button" style="width:100%;height:36px;"></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  };
+
+  const showResultsSkeleton = () => {
+    const grid = document.getElementById('adminResultsGrid');
+    if (!grid) return;
+    grid.innerHTML = `
+      <div style="margin-bottom:3rem;background:#f8fafc;padding:1.5rem;border-radius:20px;border:1px solid var(--border);">
+        <div class="skeleton skeleton-title" style="width:35%;margin-bottom:1.5rem;"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;">
+          ${Array(3).fill(`
+            <div class="skeleton-card" style="background:white;padding:1.25rem;border-radius:16px;border:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                <div class="skeleton" style="width:50px;height:50px;border-radius:50%;flex-shrink:0;"></div>
+                <div style="flex:1;">
+                  <div class="skeleton skeleton-text" style="width:70%;margin-bottom:6px;"></div>
+                  <div class="skeleton skeleton-text" style="width:45%;height:0.7rem;"></div>
+                </div>
+              </div>
+              <div class="skeleton skeleton-text" style="width:100%;height:8px;border-radius:4px;"></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  };
+
+  // ── Data Loaders ──────────────────────────────────────────────────────
+
   const loadStats = async () => {
+    showStatSkeletons();
+    showCandidateListSkeleton();
+    showResultsSkeleton();
     try {
         const res = await fetch(`${API_URL}/admin/stats`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -75,6 +153,11 @@ if (window.location.pathname.includes('admin-dashboard')) {
         acc[cat].push(c);
         return acc;
     }, {});
+
+    if (Object.keys(grouped).length === 0) {
+      grid.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-muted);">No candidates found.</p>';
+      return;
+    }
 
     grid.innerHTML = Object.entries(grouped).map(([category, list]) => {
         const categoryTotal = list.reduce((sum, c) => sum + (c.votes || 0), 0);
@@ -118,6 +201,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
   };
 
   const loadCategories = async () => {
+    showCategoryListSkeleton();
     try {
         const res = await fetch(`${API_URL}/admin/categories`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -127,15 +211,19 @@ if (window.location.pathname.includes('admin-dashboard')) {
         // Update Categories List Tab
         const list = document.getElementById('categoryList');
         if (list) {
-            list.innerHTML = categories.map(c => `
-                <div class="card" style="padding: 1.5rem; position: relative; border-radius: 16px; border: 1px solid var(--border);">
-                    <h4 style="margin-bottom: 5px;">${c.name}</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">${c.description || 'No description'}</p>
-                    <button onclick="deleteCategory('${c._id}')" style="position: absolute; top: 15px; right: 15px; border: none; background: none; color: var(--danger); cursor: pointer;">
-                        <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
-                    </button>
-                </div>
-            `).join('');
+            if (categories.length === 0) {
+              list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:2rem;">No categories yet. Add one above.</p>';
+            } else {
+              list.innerHTML = categories.map(c => `
+                  <div class="card" style="padding: 1.5rem; position: relative; border-radius: 16px; border: 1px solid var(--border);">
+                      <h4 style="margin-bottom: 5px;">${c.name}</h4>
+                      <p style="font-size: 0.8rem; color: var(--text-muted);">${c.description || 'No description'}</p>
+                      <button onclick="deleteCategory('${c._id}')" style="position: absolute; top: 15px; right: 15px; border: none; background: none; color: var(--danger); cursor: pointer;">
+                          <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                      </button>
+                  </div>
+              `).join('');
+            }
             lucide.createIcons();
         }
 
@@ -165,6 +253,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
   };
 
   const loadVoters = async () => {
+    showVoterListSkeleton();
     try {
         const res = await fetch(`${API_URL}/admin/voters`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -172,21 +261,25 @@ if (window.location.pathname.includes('admin-dashboard')) {
         const voters = await res.json();
         const list = document.getElementById('voterList');
         if (list) {
-            list.innerHTML = voters.map(v => `
-                <li style="background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px solid var(--border); list-style: none;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <strong style="font-size: 0.9rem;">${v.email}</strong>
-                        <span style="padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: ${v.hasVoted ? '#dcfce7' : '#e2e8f0'}; color: ${v.hasVoted ? '#166534' : '#475569'};">
-                            ${v.hasVoted ? 'VOTED' : 'PENDING'}
-                        </span>
-                    </div>
-                    ${v.votingToken ? `
-                        <div style="font-family: monospace; font-size: 0.75rem; color: var(--text-muted); word-break: break-all; background: white; padding: 6px; border-radius: 6px; border: 1px solid var(--border);">
-                            ${window.location.origin}/voting.html?token=${v.votingToken}
-                        </div>
-                    ` : ''}
-                </li>
-            `).join('');
+            if (voters.length === 0) {
+              list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:2rem;grid-column:1/-1;">No voters registered yet.</p>';
+            } else {
+              list.innerHTML = voters.map(v => `
+                  <li style="background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px solid var(--border); list-style: none;">
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                          <strong style="font-size: 0.9rem;">${v.email}</strong>
+                          <span style="padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: ${v.hasVoted ? '#dcfce7' : '#e2e8f0'}; color: ${v.hasVoted ? '#166534' : '#475569'};">
+                              ${v.hasVoted ? 'VOTED' : 'PENDING'}
+                          </span>
+                      </div>
+                      ${v.votingToken ? `
+                          <div style="font-family: monospace; font-size: 0.75rem; color: var(--text-muted); word-break: break-all; background: white; padding: 6px; border-radius: 6px; border: 1px solid var(--border);">
+                              ${window.location.origin}/voting.html?token=${v.votingToken}
+                          </div>
+                      ` : ''}
+                  </li>
+              `).join('');
+            }
         }
     } catch (err) { console.error('Voters error:', err); }
   };
@@ -200,7 +293,6 @@ if (window.location.pathname.includes('admin-dashboard')) {
         
         if (settings.startTime) {
             const start = new Date(settings.startTime);
-            // Convert UTC to local format for datetime-local input (YYYY-MM-DDTHH:mm)
             const localStart = new Date(start.getTime() - (start.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
             document.getElementById('startTime').value = localStart;
         }
@@ -214,7 +306,8 @@ if (window.location.pathname.includes('admin-dashboard')) {
     } catch (err) { console.error('Settings error:', err); }
   };
 
-  // Event Listeners
+  // ── Event Listeners ───────────────────────────────────────────────────
+
   document.getElementById('addVoterForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     ui.showLoading();
@@ -313,7 +406,6 @@ if (window.location.pathname.includes('admin-dashboard')) {
     e.preventDefault();
     ui.showLoading();
     
-    // Normalize times to UTC before sending to server
     const startTimeVal = document.getElementById('startTime').value;
     const endTimeVal = document.getElementById('endTime').value;
     
@@ -345,6 +437,11 @@ if (window.location.pathname.includes('admin-dashboard')) {
         acc[cat].push(c);
         return acc;
     }, {});
+
+    if (Object.keys(grouped).length === 0) {
+      grid.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-muted);">No candidates added yet.</p>';
+      return;
+    }
 
     grid.innerHTML = Object.entries(grouped).map(([category, list]) => `
         <div style="margin-bottom: 3rem;">
@@ -387,7 +484,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
     if (el) el.value = `${window.location.origin}/voting.html`;
   };
 
-  // Init
+  // ── Init ──────────────────────────────────────────────────────────────
   loadStats();
   loadVoters();
   loadCategories();
@@ -477,4 +574,16 @@ window.resetSystemData = async () => {
         }
     } catch (err) { ui.showToast('Reset failed', 'error'); }
     finally { ui.hideLoading(); }
+};
+
+window.copyGlobalLink = () => {
+    const el = document.getElementById('globalLink');
+    if (!el) return;
+    navigator.clipboard.writeText(el.value).then(() => {
+        ui.showToast('Link copied to clipboard!');
+    }).catch(() => {
+        el.select();
+        document.execCommand('copy');
+        ui.showToast('Link copied!');
+    });
 };

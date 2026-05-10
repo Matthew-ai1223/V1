@@ -1,6 +1,49 @@
 const API_URL = '/api';
 const socket = typeof io !== 'undefined' ? io() : null;
 
+// ── Skeleton for results page ─────────────────────────────────────────────
+
+const showResultsPageSkeleton = () => {
+    // Stat card skeletons
+    ['turnoutPercent', 'electionStatus'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '<span class="skeleton" style="display:inline-block;width:60px;height:2rem;border-radius:6px;"></span>';
+    });
+    ['votedCount', 'totalCount'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '<span class="skeleton" style="display:inline-block;width:30px;height:1rem;border-radius:4px;"></span>';
+    });
+
+    // Results grid skeleton
+    const grid = document.getElementById('resultsGrid');
+    if (!grid) return;
+    grid.innerHTML = `
+        <div style="grid-column:1/-1;">
+            ${Array(2).fill(`
+                <div style="margin-top:3rem;">
+                    <div class="skeleton skeleton-title" style="width:30%;margin-bottom:2rem;"></div>
+                    <div class="candidate-grid">
+                        ${Array(3).fill(`
+                            <div class="skeleton-card" style="background:white;padding:1.5rem;border-radius:20px;border:1px solid var(--border);text-align:center;">
+                                <div class="skeleton" style="width:100px;height:100px;border-radius:50%;margin:0 auto 1rem;"></div>
+                                <div class="skeleton skeleton-title" style="width:65%;margin:0 auto 8px;"></div>
+                                <div class="skeleton skeleton-text" style="width:45%;height:0.75rem;margin:0 auto 1.5rem;"></div>
+                                <div class="skeleton" style="width:100%;height:10px;border-radius:5px;margin-bottom:8px;"></div>
+                                <div style="display:flex;justify-content:space-between;">
+                                    <div class="skeleton" style="width:60px;height:0.8rem;border-radius:4px;"></div>
+                                    <div class="skeleton" style="width:40px;height:0.8rem;border-radius:4px;"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+};
+
+// ── Render real results ───────────────────────────────────────────────────
+
 const renderResults = (data) => {
     const { candidates, stats } = data;
     const grid = document.getElementById('resultsGrid');
@@ -69,12 +112,25 @@ const renderResults = (data) => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 };
 
+// ── Load & init ───────────────────────────────────────────────────────────
+
 const loadResults = async () => {
+    showResultsPageSkeleton();
     try {
         const res = await fetch(`${API_URL}/voter/results`);
         const data = await res.json();
         
         if (!res.ok) {
+            // Restore stat card defaults if results hidden
+            const turnoutEl = document.getElementById('turnoutPercent');
+            if (turnoutEl) turnoutEl.innerText = '—';
+            const statusEl = document.getElementById('electionStatus');
+            if (statusEl) { statusEl.innerText = 'PENDING'; statusEl.style.color = 'var(--text-muted)'; }
+            ['votedCount', 'totalCount'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = '0';
+            });
+
             document.getElementById('resultsGrid').innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; background: white; border-radius: 24px; box-shadow: var(--shadow);">
                     <div style="margin-bottom: 1.5rem; color: var(--primary); display: flex; justify-content: center;">
