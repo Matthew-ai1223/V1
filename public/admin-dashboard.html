@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Voting System</title>
     <link rel="stylesheet" href="/css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
@@ -13,29 +15,29 @@
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <span style="font-size: 2rem;">🗳️</span>
+                <i data-lucide="vote" style="width: 32px; height: 32px;"></i>
                 <span>VoteAdmin</span>
             </div>
             
             <nav class="sidebar-nav">
                 <button class="nav-item active" onclick="showTab('voters', this)">
-                    <span>👥</span> <span>Voters List</span>
+                    <i data-lucide="users"></i> <span>Voters List</span>
                 </button>
                 <button class="nav-item" onclick="showTab('candidates', this)">
-                    <span>👨‍💼</span> <span>Candidates</span>
+                    <i data-lucide="user-plus"></i> <span>Candidates</span>
                 </button>
                 <button class="nav-item" onclick="showTab('settings', this)">
-                    <span>⚙️</span> <span>Election Settings</span>
+                    <i data-lucide="settings"></i> <span>Election Settings</span>
                 </button>
-                <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--border);">
+                <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--border);" class="sidebar-footer">
                     <a href="/results.html" target="_blank" class="nav-item">
-                        <span>📊</span> <span>Live Results</span>
+                        <i data-lucide="bar-chart-3"></i> <span>Live Results</span>
                     </a>
                     <a href="/voting.html" target="_blank" class="nav-item">
-                        <span>👁️</span> <span>Preview Ballot</span>
+                        <i data-lucide="eye"></i> <span>Preview Ballot</span>
                     </a>
                     <button id="logoutBtn" class="nav-item" style="color: var(--danger);">
-                        <span>🚪</span> <span>Logout</span>
+                        <i data-lucide="log-out"></i> <span>Logout</span>
                     </button>
                 </div>
             </nav>
@@ -48,7 +50,7 @@
                     <h1 style="margin-bottom: 0.5rem;">Election Dashboard</h1>
                     <p style="margin-bottom: 0;">Welcome back, Administrator</p>
                 </div>
-                <div class="stats-row" style="margin-bottom: 0; gap: 1rem;">
+                <div class="stats-row admin-stats" style="margin-bottom: 0; gap: 1rem;">
                     <div class="stat-card" style="padding: 1rem 1.5rem; margin-bottom: 0;">
                         <h3 style="font-size: 0.75rem;">Total Voters</h3>
                         <p id="totalVoters" style="font-size: 1.5rem;">0</p>
@@ -63,17 +65,19 @@
             <!-- Voter Management Tab -->
             <div id="voters" class="tab-content active">
                 <div class="card" style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); box-shadow: var(--shadow);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div class="card-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
                         <h2 style="margin-bottom: 0;">Voter Management</h2>
-                        <div style="background: #f8fafc; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+                        <div class="share-link-box" style="background: #f8fafc; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
                             <span style="font-size: 0.875rem; font-weight: 600;">Shareable Link:</span>
-                            <input type="text" id="globalLink" readonly style="border: none; background: transparent; font-family: monospace; font-size: 0.8rem; width: 300px;" value="">
-                            <button onclick="copyGlobalLink()" class="btn-small" style="background: var(--primary); padding: 4px 12px;">Copy</button>
+                            <input type="text" id="globalLink" readonly style="border: none; background: transparent; font-family: monospace; font-size: 0.8rem; width: 250px;" value="">
+                            <button onclick="copyGlobalLink()" class="btn-small" style="background: var(--primary); padding: 4px 12px; display: flex; align-items: center; gap: 4px;">
+                                <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy
+                            </button>
                         </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
-                        <div style="padding-right: 2rem; border-right: 1px solid var(--border);">
+                    <div class="management-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+                        <div class="voter-form-section" style="padding-right: 2rem; border-right: 1px solid var(--border);">
                             <h3>Add Individual Voter</h3>
                             <form id="addVoterForm" class="stacked-form">
                                 <div class="input-group">
@@ -82,30 +86,32 @@
                                 <button type="submit" class="btn" style="width: 100%;">Add to List</button>
                             </form>
                         </div>
-                        <div>
+                        <div class="voter-bulk-section">
                             <h3>Bulk Registration</h3>
                             <p style="font-size: 0.875rem; margin-bottom: 1rem;">Upload a CSV file with an 'email' column.</p>
                             <form id="bulkVoterForm" style="display: flex; flex-direction: column; gap: 1rem;">
-                                <input type="file" id="csvFile" accept=".csv" required style="padding: 0.5rem; border: 1px dashed var(--border); border-radius: 8px;">
+                                <input type="file" id="csvFile" accept=".csv" required style="padding: 0.5rem; border: 1px dashed var(--border); border-radius: 8px; width: 100%;">
                                 <button type="submit" class="btn btn-secondary">Upload Voters CSV</button>
                             </form>
                         </div>
                     </div>
 
                     <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                             <h3>Eligible Voters List</h3>
-                            <button id="generateLinksBtn" class="btn" style="background: var(--success);">Generate & Send All Links</button>
+                            <button id="generateLinksBtn" class="btn" style="background: var(--success); display: flex; align-items: center; gap: 8px;">
+                                <i data-lucide="send"></i> Generate & Send All Links
+                            </button>
                         </div>
-                        <ul id="voterList" class="list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;"></ul>
+                        <ul id="voterList" class="list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;"></ul>
                     </div>
                 </div>
             </div>
 
             <!-- Candidate Management Tab -->
             <div id="candidates" class="tab-content">
-                <div style="display: grid; grid-template-columns: 350px 1fr; gap: 3rem; align-items: start;">
-                    <div class="card" style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); position: sticky; top: 2rem;">
+                <div class="candidate-management-layout" style="display: grid; grid-template-columns: 350px 1fr; gap: 3rem; align-items: start;">
+                    <div class="card add-candidate-card" style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); position: sticky; top: 2rem;">
                         <h3>Add New Candidate</h3>
                         <form id="addCandidateForm" class="stacked-form">
                             <div class="input-group">
@@ -127,7 +133,7 @@
                             <button type="submit" class="btn" style="width: 100%;">Save Candidate</button>
                         </form>
                     </div>
-                    <div>
+                    <div class="candidate-list-section">
                         <h2 style="margin-bottom: 2rem;">Election Candidates</h2>
                         <div id="candidateList"></div>
                     </div>
@@ -136,7 +142,7 @@
 
             <!-- Settings Tab -->
             <div id="settings" class="tab-content">
-                <div class="card" style="max-width: 600px; background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border);">
+                <div class="card settings-card" style="max-width: 600px; background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border);">
                     <h2 style="margin-bottom: 2rem;">Election Lifecycle Settings</h2>
                     <form id="settingsForm" class="stacked-form">
                         <div class="input-group">
@@ -167,6 +173,9 @@
     <script src="/js/utils.js"></script>
     <script src="/js/admin.js"></script>
     <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
         // Override the global showTab to handle sidebar styling
         const originalShowTab = window.showTab;
         window.showTab = (tabId, btnEl) => {
