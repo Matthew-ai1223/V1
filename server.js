@@ -11,13 +11,21 @@ const voterRoutes = require('./routes/voterRoutes');
 
 const app = express();
 
-// Connect to Database
-connectDB();
+// Database Connection Middleware
+const dbMiddleware = async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ message: 'Database connection error' });
+  }
+};
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api', dbMiddleware);
 
 // Serve frontend static files (Only needed for local development)
 if (process.env.NODE_ENV !== 'production') {
@@ -25,6 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // API Routes
+app.get('/api/health', (req, res) => res.json({ status: 'ok', environment: process.env.NODE_ENV }));
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/voter', voterRoutes);
