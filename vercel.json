@@ -6,8 +6,9 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/frontend/$1"
     }
-  ]
+  ],
+  "cleanUrls": true
 }
