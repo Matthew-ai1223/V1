@@ -43,6 +43,9 @@
                     <a href="/voting.html" target="_blank" class="nav-item">
                         <i data-lucide="eye"></i> <span>Preview Ballot</span>
                     </a>
+                    <button class="nav-item" onclick="toggleHelp()" style="color: var(--primary); border: none; background: none; width: 100%; text-align: left; cursor: pointer; padding: 0.75rem 1rem;">
+                        <i data-lucide="help-circle"></i> <span>Help & Guide</span>
+                    </button>
                     <button id="logoutBtn" class="nav-item" style="color: var(--danger);">
                         <i data-lucide="log-out"></i> <span>Logout</span>
                     </button>
@@ -279,6 +282,64 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 1000; backdrop-filter: blur(8px); padding: 2rem; overflow-y: auto;">
+        <div style="max-width: 700px; margin: 2rem auto; background: white; border-radius: 32px; padding: 3rem; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            <button onclick="toggleHelp()" style="position: absolute; top: 1.5rem; right: 1.5rem; border: none; background: #f1f5f9; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="x" style="width: 20px; height: 20px; color: var(--text-main);"></i>
+            </button>
+            
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--primary);">How to Run Your Election</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Follow these 5 simple steps to launch your online voting platform successfully.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                    <div style="background: #eef2ff; color: #4f46e5; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">1</div>
+                    <div>
+                        <h4 style="margin: 0 0 5px 0;">Define Election Categories</h4>
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Go to <strong>Election Categories</strong> and add positions (e.g., President, Secretary). This is the foundation of your ballot.</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                    <div style="background: #ecfdf5; color: #059669; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">2</div>
+                    <div>
+                        <h4 style="margin: 0 0 5px 0;">Register Your Voters</h4>
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">In the <strong>Voters List</strong>, add emails individually or upload a CSV file. Only registered emails will be able to access the voting page.</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                    <div style="background: #fff7ed; color: #ea580c; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">3</div>
+                    <div>
+                        <h4 style="margin: 0 0 5px 0;">Add Candidates</h4>
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Go to <strong>Candidate Management</strong>. Choose a category for each candidate and upload their photo and party details.</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                    <div style="background: #fdf2f8; color: #db2777; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">4</div>
+                    <div>
+                        <h4 style="margin: 0 0 5px 0;">Configure Election Settings</h4>
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Under <strong>Election Settings</strong>, set your start and end times. Make sure to check <strong>"Enable Public Voting Access"</strong> to allow voters in.</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                    <div style="background: #f0f9ff; color: #0284c7; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">5</div>
+                    <div>
+                        <h4 style="margin: 0 0 5px 0;">Send Voting Links</h4>
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Finally, go back to the <strong>Voters List</strong> and click <strong>"Send All Links"</strong>. This generates secure tokens and emails everyone their private ballot link.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="toggleHelp()" style="width: 100%; margin-top: 3rem; background: var(--primary); color: white; border: none; height: 56px; border-radius: 16px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: transform 0.2s;">
+                Got it, let's start!
+            </button>
+        </div>
     </div>
 
     <script src="/js/utils.js"></script>
