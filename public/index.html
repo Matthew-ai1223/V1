@@ -8,9 +8,20 @@
 </head>
 <body>
   <div class="landing-container">
-    <h1>Welcome to the Secure Online Voting System</h1>
+    <h1 id="electionTitle">Welcome to the Online Voting System</h1>
     <p>Please use the unique link sent to your email to access your voting ballot.</p>
     <a href="/admin-login.html" class="btn">Admin Login</a>
   </div>
+  <script>
+    fetch('/api/voter/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.electionName) {
+          document.getElementById('electionTitle').innerText = `Welcome to the ${data.electionName}`;
+          document.title = data.electionName;
+        }
+      })
+      .catch(err => console.error('Error fetching settings:', err));
+  </script>
 </body>
 </html>

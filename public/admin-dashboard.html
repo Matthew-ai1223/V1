@@ -59,7 +59,7 @@
         <main class="main-content">
             <header class="dashboard-header">
                 <div>
-                    <h1 style="margin-bottom: 0.5rem;">Election Dashboard</h1>
+                    <h1 id="electionTitleDisplay" style="margin-bottom: 0.5rem;">Election Dashboard</h1>
                     <p style="margin-bottom: 0;">Welcome back, Administrator</p>
                 </div>
                 <div class="stats-row admin-stats" style="margin-bottom: 0; gap: 1rem;">
@@ -240,6 +240,11 @@
                     </div>
 
                     <form id="settingsForm" class="stacked-form">
+                        <div class="input-group">
+                            <label>Election / Organization Name</label>
+                            <input type="text" id="electionName" placeholder="e.g. United States Presidential Election" required>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">This name will appear on the ballot, results page, and in emails sent to voters.</p>
+                        </div>
                         <div class="input-group">
                             <label>Voting Start Time</label>
                             <input type="datetime-local" id="startTime" oninput="previewUTC('startTime', 'startTimeUTC')">

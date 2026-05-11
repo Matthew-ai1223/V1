@@ -291,6 +291,12 @@ if (window.location.pathname.includes('admin-dashboard')) {
         });
         const settings = await res.json();
         
+        if (settings.electionName) {
+            document.getElementById('electionName').value = settings.electionName;
+            const display = document.getElementById('electionTitleDisplay');
+            if (display) display.innerText = settings.electionName;
+        }
+        
         if (settings.startTime) {
             const start = new Date(settings.startTime);
             const localStart = new Date(start.getTime() - (start.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
@@ -410,6 +416,7 @@ if (window.location.pathname.includes('admin-dashboard')) {
     const endTimeVal = document.getElementById('endTime').value;
     
     const body = {
+        electionName: document.getElementById('electionName').value,
         startTime: startTimeVal ? new Date(startTimeVal).toISOString() : null,
         endTime: endTimeVal ? new Date(endTimeVal).toISOString() : null,
         votingEnabled: document.getElementById('votingEnabled').checked,
@@ -422,7 +429,11 @@ if (window.location.pathname.includes('admin-dashboard')) {
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(body)
         });
-        if (res.ok) ui.showToast('Settings saved and synchronized with server time');
+        if (res.ok) {
+            ui.showToast('Settings saved and synchronized with server time');
+            const display = document.getElementById('electionTitleDisplay');
+            if (display) display.innerText = body.electionName;
+        }
     } catch (err) { ui.showToast('Error saving settings', 'error'); }
     finally { ui.hideLoading(); }
   });

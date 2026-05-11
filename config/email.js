@@ -10,12 +10,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendVotingLink = async (email, link) => {
+const sendVotingLink = async (email, link, electionName = 'Online Voting System') => {
   try {
     const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"Online Voting System" <noreply@voting.com>',
+      from: process.env.EMAIL_FROM || `"${electionName}" <noreply@voting.com>`,
       to: email,
-      subject: 'Your Unique Voting Link',
+      subject: `Your Unique Voting Link for ${electionName}`,
       html: `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; border: 1px solid #e2e8f0; border-radius: 24px; color: #1e293b;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -23,7 +23,7 @@ const sendVotingLink = async (email, link) => {
           </div>
           <h2 style="color: #0f172a; margin-bottom: 20px; text-align: center;">Official Voting Invitation</h2>
           <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">Hello,</p>
-          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">You have been registered as an eligible voter in the upcoming election. To ensure the integrity of the vote, you have been assigned a <strong>unique and secure access token</strong>.</p>
+          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">You have been registered as an eligible voter in the upcoming <strong>${electionName}</strong>. To ensure the integrity of the vote, you have been assigned a <strong>unique and secure access token</strong>.</p>
           
           <div style="text-align: center; margin: 40px 0;">
             <a href="${link}" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; padding: 18px 35px; text-decoration: none; border-radius: 14px; font-weight: bold; font-size: 18px; display: inline-block; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);">Access Secure Ballot</a>
@@ -36,7 +36,7 @@ const sendVotingLink = async (email, link) => {
             <p style="word-break: break-all; color: #6366f1;">${link}</p>
           </div>
           
-          <p style="margin-top: 40px; font-size: 14px; text-align: center;">Thank you for participating in our democratic process.</p>
+          <p style="margin-top: 40px; font-size: 14px; text-align: center;">Thank you for participating in the <strong>${electionName}</strong>.</p>
         </div>
       `,
     });

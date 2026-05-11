@@ -114,7 +114,20 @@ const renderResults = (data) => {
 
 // ── Load & init ───────────────────────────────────────────────────────────
 
+const loadElectionSettings = async () => {
+    try {
+        const res = await fetch(`${API_URL}/voter/settings`);
+        const data = await res.json();
+        if (data.electionName) {
+            document.title = `${data.electionName} | Live Results`;
+            const header = document.getElementById('electionNameHeader');
+            if (header) header.innerText = data.electionName;
+        }
+    } catch (err) { console.error('Settings load error:', err); }
+};
+
 const loadResults = async () => {
+    loadElectionSettings();
     showResultsPageSkeleton();
     try {
         const res = await fetch(`${API_URL}/voter/results`);

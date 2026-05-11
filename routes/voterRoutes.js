@@ -4,6 +4,16 @@ const Voter = require('../models/Voter');
 const Candidate = require('../models/Candidate');
 const Settings = require('../models/Settings');
 
+// Get public election settings
+router.get('/settings', async (req, res) => {
+  try {
+    const settings = await Settings.findOne() || { electionName: 'Online Voting System' };
+    res.json({ electionName: settings.electionName });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Authenticate voter via email (for public shared link)
 router.post('/auth-email', async (req, res) => {
   try {

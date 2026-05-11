@@ -8,7 +8,20 @@ const ballotSection = document.getElementById('ballotSection');
 const voterAuthForm = document.getElementById('voterAuthForm');
 const voterInfo = document.getElementById('voterInfo');
 
+const loadElectionSettings = async () => {
+    try {
+        const res = await fetch(`${API_URL}/voter/settings`);
+        const data = await res.json();
+        if (data.electionName) {
+            document.title = `${data.electionName} | Secure Ballot`;
+            const header = document.getElementById('electionNameHeader');
+            if (header) header.innerText = data.electionName;
+        }
+    } catch (err) { console.error('Settings load error:', err); }
+};
+
 const init = () => {
+    loadElectionSettings();
     if (isPreview) {
         voterInfo.innerText = "PREVIEW MODE (Admin)";
         loadBallot();

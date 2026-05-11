@@ -83,6 +83,9 @@ const { sendVotingLink } = require('../config/email');
 router.post('/voters/generate-links', protect, async (req, res) => {
   try {
     const voters = await Voter.find();
+    const settings = await Settings.findOne() || { electionName: 'Online Voting System' };
+    const electionName = settings.electionName;
+
     for (let voter of voters) {
       if (!voter.votingToken) {
         voter.votingToken = crypto.randomBytes(20).toString('hex');
@@ -91,7 +94,7 @@ router.post('/voters/generate-links', protect, async (req, res) => {
       // Send email if they have a token (either newly generated or existing)
       const baseUrl = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
       const link = `${baseUrl}/voting.html?token=${voter.votingToken}`;
-      await sendVotingLink(voter.email, link);
+      await sendVotingLink(voter.email, link, electionName);
     }
     res.json({ message: 'Voting links generated and emailed to all voters' });
   } catch (err) {
@@ -137,11 +140,12 @@ router.get('/settings', protect, async (req, res) => {
 
 router.post('/settings', protect, async (req, res) => {
   try {
-    const { startTime, endTime, votingEnabled, showResults } = req.body;
+    const { electionName, startTime, endTime, votingEnabled, showResults } = req.body;
     let settings = await Settings.findOne();
     if (!settings) {
-      settings = await Settings.create({ startTime, endTime, votingEnabled, showResults });
+      settings = await Settings.create({ electionName, startTime, endTime, votingEnabled, showResults });
     } else {
+      settings.electionName = electionName || settings.electionName;
       settings.startTime = startTime;
       settings.endTime = endTime;
       settings.votingEnabled = votingEnabled;
