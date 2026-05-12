@@ -291,12 +291,30 @@
                             <i data-lucide="alert-triangle"></i> Danger Zone
                         </h3>
                         <p style="font-size: 0.8rem; color: #991b1b; margin-bottom: 1.5rem;">
-                            This action is <strong>irreversible</strong>. It will permanently delete all voters,
-                            candidates, and reset all configurations.
+                            Select the data you wish to clear. This action is <strong>irreversible</strong>.
                         </p>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.85rem; color: #991b1b;">
+                                <input type="checkbox" id="clearVoters" style="width: 16px; height: 16px;"> Clear All Voters
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.85rem; color: #991b1b;">
+                                <input type="checkbox" id="clearCandidates" style="width: 16px; height: 16px;"> Clear All Candidates
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.85rem; color: #991b1b;">
+                                <input type="checkbox" id="clearCategories" style="width: 16px; height: 16px;"> Clear All Categories
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.85rem; color: #991b1b;">
+                                <input type="checkbox" id="resetSettings" style="width: 16px; height: 16px;"> Reset Election Settings
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.85rem; color: #991b1b;">
+                                <input type="checkbox" id="clearVotes" style="width: 16px; height: 16px;"> Clear All Votes Only
+                            </label>
+                        </div>
+
                         <button onclick="resetSystemData()" class="btn"
                             style="background: var(--danger); border: none; width: 100%; height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.9rem;">
-                            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Clear All System Data
+                            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Clear Selected Data
                         </button>
                     </div>
                 </div>

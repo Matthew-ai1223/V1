@@ -190,17 +190,49 @@ router.delete('/categories/:id', protect, async (req, res) => {
 
 router.post('/reset', protect, async (req, res) => {
   try {
-    await Voter.deleteMany({});
-    await Candidate.deleteMany({});
-    await Category.deleteMany({});
-    await Settings.findOneAndUpdate({}, { 
-      votingEnabled: false, 
-      showResults: false,
-      startTime: null,
-      endTime: null
-    }, { upsert: true });
+    const { voters, candidates, categories, settings, votes } = req.body;
+    let clearedCount = 0;
+
+    if (voters) {
+      await Voter.deleteMany({});
+      clearedCount++;
+    } else if (votes) {
+      // If we aren't deleting voters, but we are clearing votes, reset hasVoted flag
+      await Voter.updateMany({}, { hasVoted: false });
+      clearedCount++;
+    }
+
+    if (candidates) {
+      await Candidate.deleteMany({});
+      clearedCount++;
+    } else if (votes) {
+      // If we aren't deleting candidates, but we are clearing votes, reset vote counts
+      await Candidate.updateMany({}, { votes: 0 });
+      // Only increment clearedCount if it wasn't already incremented by voters-votes check
+      if (!req.body.voters) clearedCount++; 
+    }
+
+    if (categories) {
+      await Category.deleteMany({});
+      clearedCount++;
+    }
     
-    res.json({ message: 'All system data has been cleared successfully.' });
+    if (settings) {
+      await Settings.findOneAndUpdate({}, { 
+        votingEnabled: false, 
+        showResults: false,
+        startTime: null,
+        endTime: null,
+        electionName: 'Online Voting System' // Reset name to default as well
+      }, { upsert: true });
+      clearedCount++;
+    }
+    
+    if (clearedCount === 0) {
+      return res.status(400).json({ message: 'No data categories selected for clearing.' });
+    }
+
+    res.json({ message: 'Selected system data has been cleared successfully.' });
   } catch (err) {
     res.status(500).json({ message: 'Failed to reset system data.' });
   }

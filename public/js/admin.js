@@ -576,7 +576,20 @@ if (window.location.pathname.includes('admin-dashboard')) {
 }
 
 window.resetSystemData = async () => {
-    if (!confirm('CRITICAL WARNING: This will permanently delete ALL data. Are you absolutely sure?')) return;
+    const options = {
+        voters: document.getElementById('clearVoters').checked,
+        candidates: document.getElementById('clearCandidates').checked,
+        categories: document.getElementById('clearCategories').checked,
+        settings: document.getElementById('resetSettings').checked,
+        votes: document.getElementById('clearVotes').checked
+    };
+
+    const selectedCount = Object.values(options).filter(v => v).length;
+    if (selectedCount === 0) {
+        return ui.showToast('Please select at least one item to clear', 'error');
+    }
+
+    if (!confirm(`CRITICAL WARNING: This will permanently delete the selected ${selectedCount} data type(s). Are you absolutely sure?`)) return;
     const confirmText = prompt('Type "DELETE" to confirm:');
     if (confirmText !== 'DELETE') return ui.showToast('Reset cancelled', 'error');
 
@@ -585,11 +598,18 @@ window.resetSystemData = async () => {
     try {
         const res = await fetch(`${API_URL}/admin/reset`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify(options)
         });
         if (res.ok) {
-            ui.showToast('System reset successful');
+            ui.showToast('System data cleared successfully');
             setTimeout(() => window.location.reload(), 1000);
+        } else {
+            const data = await res.json();
+            ui.showToast(data.message || 'Reset failed', 'error');
         }
     } catch (err) { ui.showToast('Reset failed', 'error'); }
     finally { ui.hideLoading(); }
