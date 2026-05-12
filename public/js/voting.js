@@ -7,6 +7,7 @@ const authSection = document.getElementById('authSection');
 const ballotSection = document.getElementById('ballotSection');
 const voterAuthForm = document.getElementById('voterAuthForm');
 const voterInfo = document.getElementById('voterInfo');
+const voterInfoBox = document.getElementById('voterInfoBox');
 
 const loadElectionSettings = async () => {
     try {
@@ -21,9 +22,16 @@ const loadElectionSettings = async () => {
 };
 
 const init = () => {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     loadElectionSettings();
     if (isPreview) {
         voterInfo.innerText = "PREVIEW MODE (Admin)";
+        if (voterInfoBox) {
+            voterInfoBox.style.display = 'flex';
+            voterInfoBox.style.background = '#fff7ed';
+            voterInfoBox.style.color = '#9a3412';
+            voterInfoBox.style.borderColor = '#ffedd5';
+        }
         loadBallot();
         return;
     }
@@ -50,7 +58,9 @@ voterAuthForm.addEventListener('submit', async (e) => {
 
         if (res.ok) {
             currentToken = data.token;
-            voterInfo.innerText = `Voting as: ${data.email}`;
+            voterInfo.innerText = data.email;
+            const infoBox = document.getElementById('voterInfoBox');
+            if (infoBox) infoBox.style.display = 'flex';
             authSection.style.display = 'none';
             loadBallot();
         } else {
@@ -135,10 +145,10 @@ const renderBallot = () => {
                 <div class="progress-checklist" style="display: flex; flex-direction: column; gap: 0.75rem;">
                     ${allCategories.map(cat => `
                         <div class="checklist-item ${selectedCandidates[cat] ? 'completed' : ''}" 
-                             style="display: flex; align-items: center; gap: 10px; font-size: 0.875rem; color: ${selectedCandidates[cat] ? 'var(--text-main)' : 'var(--text-muted)'}; cursor: pointer;"
+                             style="display: flex; align-items: center; gap: 10px; font-size: 0.875rem; color: ${selectedCandidates[cat] ? 'var(--text-main)' : 'var(--text-muted)'}; cursor: pointer; padding: 8px; border-radius: 8px; transition: all 0.2s; border: 1px solid ${selectedCandidates[cat] ? 'var(--success)' : 'transparent'};"
                              onclick="document.getElementById('cat-${cat.replace(/\s+/g, '-')}').scrollIntoView({behavior: 'smooth', block: 'center'})">
-                            <div class="check-box" style="width: 18px; height: 18px; border-radius: 4px; border: 2px solid ${selectedCandidates[cat] ? 'var(--success)' : 'var(--border)'}; background: ${selectedCandidates[cat] ? 'var(--success)' : 'transparent'}; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-                                ${selectedCandidates[cat] ? '<span style="color: white; font-size: 10px;">✓</span>' : ''}
+                            <div class="check-box" style="width: 20px; height: 20px; border-radius: 6px; border: 2px solid ${selectedCandidates[cat] ? 'var(--success)' : 'var(--border)'}; background: ${selectedCandidates[cat] ? 'var(--success)' : 'transparent'}; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                                ${selectedCandidates[cat] ? '<i data-lucide="check" style="width: 14px; height: 14px; color: white;"></i>' : ''}
                             </div>
                             <span style="flex: 1; ${selectedCandidates[cat] ? 'font-weight: 600;' : ''}">${cat}</span>
                         </div>
@@ -162,9 +172,8 @@ const renderBallot = () => {
                                      onclick="${isPreview ? '' : `selectCandidate('${category.replace(/'/g, "\\'")}', '${c._id}')`}" 
                                      style="cursor: pointer; position: relative; border-width: 2px; ${selectedCandidates[category] === c._id ? 'border-color: var(--primary); background: #f5f3ff;' : ''}">
                                     
-                                    <!-- Selection Checkbox Icon -->
-                                    <div style="position: absolute; top: 1rem; right: 1rem; width: 24px; height: 24px; border-radius: 50%; border: 2px solid ${selectedCandidates[category] === c._id ? 'var(--primary)' : 'var(--border)'}; background: ${selectedCandidates[category] === c._id ? 'var(--primary)' : 'white'}; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                        ${selectedCandidates[category] === c._id ? '<span style="color: white; font-weight: bold;">✓</span>' : ''}
+                                    <div style="position: absolute; top: 1rem; right: 1rem; width: 28px; height: 28px; border-radius: 50%; border: 2px solid ${selectedCandidates[category] === c._id ? 'var(--primary)' : 'var(--border)'}; background: ${selectedCandidates[category] === c._id ? 'var(--primary)' : 'white'}; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        ${selectedCandidates[category] === c._id ? '<i data-lucide="check" style="width: 16px; height: 16px; color: white;"></i>' : ''}
                                     </div>
 
                                     ${c.image ? `<img src="${c.image}" alt="${c.name}" style="width: 100px; height: 100px; margin-bottom: 1rem; border-radius: 50%; object-fit: cover; border: 3px solid #f1f5f9;">` : `
@@ -174,12 +183,19 @@ const renderBallot = () => {
                                     `}
                                     <h4 style="margin-bottom: 0.25rem;">${c.name}</h4>
                                     <p style="font-size: 0.875rem;">${c.party}</p>
-                                    <div style="margin-top: 1rem; font-weight: 600; color: ${selectedCandidates[category] === c._id ? 'var(--primary)' : 'var(--text-muted)'};">
-                                        ${selectedCandidates[category] === c._id ? '✓ Selected' : 'Choose Candidate'}
+                                    <div style="margin-top: 1rem; font-weight: 700; color: ${selectedCandidates[category] === c._id ? 'var(--primary)' : 'var(--text-muted)'}; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        ${selectedCandidates[category] === c._id ? '<i data-lucide="check-circle-2" style="width:16px;height:16px;"></i> Selected' : 'Choose Candidate'}
                                     </div>
                                 </div>
                             `).join('')}
                         </div>
+                        ${selectedCandidates[category] ? `
+                            <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+                                <button class="btn-small" style="background: var(--primary); display: flex; align-items: center; gap: 8px;" onclick="scrollToNextCategory('${category}')">
+                                    Next Category <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
                 `).join('')}
                 
@@ -193,6 +209,17 @@ const renderBallot = () => {
             </div>
         </div>
     `;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+};
+
+window.scrollToNextCategory = (currentCat) => {
+    const currentIndex = allCategories.indexOf(currentCat);
+    if (currentIndex < allCategories.length - 1) {
+        const nextCat = allCategories[currentIndex + 1];
+        document.getElementById(`cat-${nextCat.replace(/\s+/g, '-')}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
 };
 
 window.selectCandidate = (category, candidateId) => {
