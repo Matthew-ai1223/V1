@@ -176,7 +176,11 @@ if (window.location.pathname.includes('admin-dashboard')) {
                         return `
                             <div class="card" style="padding: 1.25rem; border: 2px solid ${isWinner ? 'var(--success)' : 'var(--border)'};">
                                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                    ${c.image ? `<img src="${c.image}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">` : ''}
+                                    ${c.image ? `<img src="${c.image}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">` : `
+                                        <div class="candidate-no-image small">
+                                            <i data-lucide="user"></i>
+                                        </div>
+                                    `}
                                     <div>
                                         <h4 style="margin: 0;">${c.name}</h4>
                                         <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">${c.party}</p>
@@ -463,7 +467,11 @@ if (window.location.pathname.includes('admin-dashboard')) {
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
                 ${list.map(c => `
                     <div class="card" style="padding: 1.5rem; text-align: center; border-radius: 20px; border: 1px solid var(--border);">
-                        ${c.image ? `<img src="${c.image}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; border: 3px solid #f1f5f9;">` : ''}
+                        ${c.image ? `<img src="${c.image}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; border: 3px solid #f1f5f9;">` : `
+                            <div class="candidate-no-image" style="width: 80px; height: 80px;">
+                                <i data-lucide="user"></i>
+                            </div>
+                        `}
                         <h4 style="margin-bottom: 5px;">${c.name}</h4>
                         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">${c.party}</p>
                         <button onclick="deleteCandidate('${c._id}')" class="btn-small" style="background: #fee2e2; color: #991b1b; border: none; width: 100%;">Delete</button>

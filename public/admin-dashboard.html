@@ -42,7 +42,7 @@
                     <a href="/results.html" target="_blank" class="nav-item">
                         <i data-lucide="bar-chart-3"></i> <span>Live Results</span>
                     </a>
-                    <a href="/voting.html" target="_blank" class="nav-item">
+                    <a href="/voting.html?preview=true" target="_blank" class="nav-item">
                         <i data-lucide="eye"></i> <span>Preview Ballot</span>
                     </a>
                     <button class="nav-item" onclick="toggleHelp()" style="color: var(--primary); border: none; background: none; width: 100%; text-align: left; cursor: pointer; padding: 0.75rem 1rem;">
@@ -58,9 +58,14 @@
         <!-- Main Content Area -->
         <main class="main-content">
             <header class="dashboard-header">
-                <div>
-                    <h1 id="electionTitleDisplay" style="margin-bottom: 0.5rem;">Election Dashboard</h1>
-                    <p style="margin-bottom: 0;">Welcome back, Administrator</p>
+                <div style="display: flex; align-items: center; gap: 2rem;">
+                    <div>
+                        <h1 id="electionTitleDisplay" style="margin-bottom: 0.5rem;">Election Dashboard</h1>
+                        <p style="margin-bottom: 0;">Welcome back, Administrator</p>
+                    </div>
+                    <a href="/voting.html?preview=true" target="_blank" class="btn" style="background: var(--accent); height: fit-content; text-decoration: none;">
+                        <i data-lucide="eye" style="margin-right: 8px;"></i> Preview Voting Page
+                    </a>
                 </div>
                 <div class="stats-row admin-stats" style="margin-bottom: 0; gap: 1rem;">
                     <div class="stat-card" style="padding: 1rem 1.5rem; margin-bottom: 0;">
@@ -190,14 +195,19 @@
                                     categories in the "Election Categories" tab.</p>
                             </div>
                             <div class="input-group">
-                                <label>Candidate Photo</label>
+                                <label>Candidate Photo (Optional)</label>
                                 <input type="file" id="candidateImage" accept="image/*">
                             </div>
                             <button type="submit" class="btn" style="width: 100%;">Save Candidate</button>
                         </form>
                     </div>
                     <div class="candidate-list-section">
-                        <h2 style="margin-bottom: 2rem;">Election Candidates</h2>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2 style="margin: 0;">Election Candidates</h2>
+                            <a href="/voting.html?preview=true" target="_blank" class="btn-small" style="background: var(--accent); color: white; display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                                <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Preview Live Ballot
+                            </a>
+                        </div>
                         <div id="candidateList"></div>
                     </div>
                 </div>

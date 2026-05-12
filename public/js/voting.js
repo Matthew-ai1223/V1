@@ -167,7 +167,11 @@ const renderBallot = () => {
                                         ${selectedCandidates[category] === c._id ? '<span style="color: white; font-weight: bold;">✓</span>' : ''}
                                     </div>
 
-                                    ${c.image ? `<img src="${c.image}" alt="${c.name}" style="width: 100px; height: 100px; margin-bottom: 1rem; border-radius: 50%; object-fit: cover; border: 3px solid #f1f5f9;">` : ''}
+                                    ${c.image ? `<img src="${c.image}" alt="${c.name}" style="width: 100px; height: 100px; margin-bottom: 1rem; border-radius: 50%; object-fit: cover; border: 3px solid #f1f5f9;">` : `
+                                        <div class="candidate-no-image" style="width: 100px; height: 100px;">
+                                            <i data-lucide="user"></i>
+                                        </div>
+                                    `}
                                     <h4 style="margin-bottom: 0.25rem;">${c.name}</h4>
                                     <p style="font-size: 0.875rem;">${c.party}</p>
                                     <div style="margin-top: 1rem; font-weight: 600; color: ${selectedCandidates[category] === c._id ? 'var(--primary)' : 'var(--text-muted)'};">

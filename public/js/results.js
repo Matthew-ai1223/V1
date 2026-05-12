@@ -89,7 +89,11 @@ const renderResults = (data) => {
                                     </div>
                                 ` : ''}
                                 
-                                ${c.image ? `<img src="${c.image}" alt="${c.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #f1f5f9; margin-bottom: 1rem; ${isWinner ? 'border-color: var(--success);' : ''}">` : ''}
+                                ${c.image ? `<img src="${c.image}" alt="${c.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #f1f5f9; margin-bottom: 1rem; ${isWinner ? 'border-color: var(--success);' : ''}">` : `
+                                    <div class="candidate-no-image" style="width: 100px; height: 100px; ${isWinner ? 'border-color: var(--success);' : ''}">
+                                        <i data-lucide="user"></i>
+                                    </div>
+                                `}
                                 <h4 style="margin-bottom: 0.25rem;">${c.name}</h4>
                                 <p style="font-size: 0.875rem; margin-bottom: 1.5rem;">${c.party}</p>
                                 
